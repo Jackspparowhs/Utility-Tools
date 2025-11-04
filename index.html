@@ -9,198 +9,153 @@
   <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect rx="14" width="64" height="64" fill="%236b7dff"/><text x="50%" y="50%" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="26" text-anchor="middle" alignment-baseline="central" fill="white">PR</text></svg>'>
   <style>
     /* -------------------------
-       Theme variables
+       Variables / themes
        ------------------------- */
     :root{
-      --bg:#e8f7fb;            /* ocean-ish default */
-      --bg-2:#f3f9fc;
-      --card:#ffffff;
-      --muted:#4f6b75;
-      --text:#063242;
-      --accent-start:#00c2d1;
-      --accent-end:#2b9fff;
-      --glass: rgba(6,50,66,0.03);
+      --bg:#f3f7fb; --bg-2:#e9f6ff; --card:#ffffff; --muted:#6b7480; --text:#0b2130;
+      --accent-start:#6b7dff; --accent-end:#0bb3ff;
+      --glass: rgba(11,17,28,0.04);
       --radius:14px;
-      --shadow-lg: 0 18px 50px rgba(3,12,30,0.08);
+      --shadow-lg: 0 18px 50px rgba(3,12,30,0.18), inset 0 1px 0 rgba(255,255,255,0.6);
       --shadow-sm: 0 8px 24px rgba(3,12,30,0.08);
-      --footer-grad: linear-gradient(90deg,#0b2540, #062334);
     }
-    html.dark {
-      --bg:#020417;
-      --bg-2:#071225;
-      --card:#061028;
-      --muted:#98a7bf;
-      --text:#e9f1ff;
-      --accent-start:#5ab3ff;
-      --accent-end:#6b7dff;
-      --glass: rgba(255,255,255,0.02);
-      --shadow-lg: 0 18px 50px rgba(0,0,0,0.6);
-      --shadow-sm: 0 8px 24px rgba(0,0,0,0.45);
-      --footer-grad: linear-gradient(90deg,#041627,#08132a);
-    }
-    html.ocean {
-      --bg:#e8f7fb; --bg-2:#f3f9fc; --card:#ffffff; --muted:#4f6b75; --text:#063242; --accent-start:#00c2d1; --accent-end:#2b9fff;
-    }
-    html.sunset {
-      --bg:#fff6f8; --bg-2:#fff8fb; --card:#fff; --muted:#7a6b77; --text:#2a1020; --accent-start:#ff7aa2; --accent-end:#ffb86b;
-    }
+    /* Themes: light (default), ocean, dark, midnight */
+    html.ocean { --bg:#e8f7fb; --bg-2:#dff6fb; --card:#ffffff; --muted:#4f6b75; --text:#063242; --glass: rgba(6,50,66,0.03); --accent-start:#00c2d1; --accent-end:#2b9fff; --shadow-lg: 0 18px 50px rgba(3,12,30,0.08); }
+    html.dark { --bg:#04111a; --bg-2:#02111a; --card:#061028; --muted:#98a7bf; --text:#e9f1ff; --glass: rgba(255,255,255,0.02); --accent-start:#5ab3ff; --accent-end:#6b7dff; --shadow-lg: 0 18px 50px rgba(0,0,0,0.6); --shadow-sm: 0 8px 24px rgba(0,0,0,0.45); }
+    html.midnight { --bg:#0a0712; --bg-2:#07102b; --card:#071028; --muted:#9aa6c0; --text:#e6f0ff; --glass: rgba(255,255,255,0.02); --accent-start:#8a5bff; --accent-end:#00d4ff; --shadow-lg: 0 22px 60px rgba(0,0,0,0.7); --shadow-sm: 0 8px 24px rgba(0,0,0,0.5); }
 
-    /* -------------------------
-       Base
-       ------------------------- */
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background: linear-gradient(180deg,var(--bg), var(--bg-2));
-      color:var(--text);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
+      background:
+        linear-gradient(180deg,var(--bg), var(--bg-2));
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      color:var(--text); margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      min-height:100vh; display:flex; flex-direction:column;
     }
     a{color:inherit;text-decoration:none}
-    .container{max-width:1280px;margin:14px auto;padding:18px;width:calc(100% - 36px);}
 
-    /* -------------------------
-       Header
-       ------------------------- */
+    /* container sizing */
+    .container{max-width:1280px;margin:14px auto;padding:18px;width:100%}
+
+    /* header */
     header.header {
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       padding:14px; border-radius:14px;
-      background: linear-gradient(90deg, rgba(11,123,255,0.06), rgba(11,179,255,0.02));
+      background:linear-gradient(90deg, rgba(107,125,255,0.06), rgba(11,179,255,0.02));
       box-shadow:var(--shadow-sm);
+      position:relative; z-index:30;
     }
-    .brand {display:flex; align-items:center; gap:12px;}
-    .logo {
-      width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;
-      background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:white; font-size:20px;
-      box-shadow:0 10px 30px rgba(11,123,255,0.12);
-      flex-shrink:0;
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{ width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+      font-weight:800;background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:white; font-size:20px;
+      box-shadow:0 10px 30px rgba(11,123,255,0.12); flex-shrink:0; }
+    .brand-title .title-strong{font-size:22px;font-weight:900;margin:0}
+    .brand-title .by{font-size:12px;color:var(--muted);margin-top:3px}
+
+    .header-actions{display:flex;gap:10px;align-items:center}
+    .btn{padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+    .btn.theme{background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white}
+    .hamb{ width:46px;height:46px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(0,0,0,0.04) }
+
+    /* theme dropdown */
+    .theme-select{position:relative}
+    .theme-list{position:absolute; right:0; top:52px; background:var(--card); border-radius:10px; box-shadow:var(--shadow-sm); padding:8px; display:none; min-width:150px; z-index:120}
+    .theme-list.open{display:block}
+    .theme-item{padding:8px 10px;cursor:pointer;border-radius:8px;font-weight:700;color:var(--muted)}
+    .theme-item:hover{background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.03)); color:var(--text)}
+
+    /* hero */
+    .hero{ margin-top:18px;padding:28px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96)); box-shadow:var(--shadow-lg)}
+    html.dark .hero, html.midnight .hero{ background: linear-gradient(180deg, rgba(2,6,12,0.6), rgba(4,12,22,0.6)); }
+    .hero .big{font-size:34px;font-weight:900;margin:0;text-align:center}
+    .hero .small{color:var(--muted);text-align:center;margin-top:8px;max-width:960px;margin-left:auto;margin-right:auto}
+    .pills{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+    .pill{padding:10px 16px;border-radius:999px;background:transparent;border:1px solid rgba(11,17,28,0.06);cursor:pointer;color:var(--muted);font-weight:700}
+    .pill.active{background:linear-gradient(90deg,var(--accent-start),var(--accent-end));color:white;box-shadow:0 10px 30px rgba(11,107,255,0.12);transform:translateY(-4px)}
+
+    /* main grid -> crucial fix: ensure main always fills viewport leaving no huge gap */
+    main.grid {
+      display:grid;
+      grid-template-columns: 2fr 380px;
+      gap:18px;
+      margin-top:18px;
+      align-items:start;
+      /* MIN HEIGHT: ensures left column expands to fill screen space so footer is not pushed down */
+      min-height: calc(100vh - 340px); /* header + hero + footer ~ 340px (approx). This prevents whiteness on large screens */
     }
-    .brand-title .title-strong {font-size:20px;font-weight:900;margin:0}
-    .brand-title .by {font-size:12px;color:var(--muted); margin-top:3px}
-    .header-actions {display:flex; gap:10px; align-items:center;}
-    .btn {padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
-    .btn.theme {background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white}
-    .hamb { width:46px;height:46px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(0,0,0,0.04) }
-
-    .theme-select { position:relative; }
-    .theme-list { position:absolute; right:0; top:48px; background:var(--card); border-radius:10px; box-shadow:var(--shadow-sm); padding:8px; display:none; min-width:140px; z-index:1000; }
-    .theme-list.open { display:block; }
-    .theme-item { padding:8px 10px; cursor:pointer; border-radius:8px; font-weight:700; color:var(--muted) }
-    .theme-item:hover{ background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.03)); color:var(--text) }
-
-    /* -------------------------
-       Hero
-       ------------------------- */
-    .hero { margin-top:18px; padding:22px 18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96)); box-shadow:var(--shadow-lg); }
-    html.dark .hero { background: linear-gradient(180deg, rgba(2,8,16,0.7), rgba(3,10,20,0.65)); }
-    @media(min-width:1100px){
-      .hero{ padding:24px 36px; border-radius:14px }
-      .hero .big { font-size:42px; }
-      .brand-title .title-strong { font-size:22px; }
-    }
-    .hero .big {font-size:30px;font-weight:900;margin:0;text-align:center}
-    .hero .small {text-align:center;color:var(--muted);margin-top:8px; max-width:980px;margin-left:auto;margin-right:auto}
-    .pills {display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:14px}
-    .pill {padding:9px 14px;border-radius:999px;background:transparent;border:1px solid rgba(11,17,28,0.06); cursor:pointer; color:var(--muted); font-weight:700}
-    .pill.active { background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; box-shadow:0 10px 30px rgba(11,107,255,0.12); transform:translateY(-3px); }
-
-    /* -------------------------
-       Grid: left tools + right feature-panel
-       - main area forced to occupy remaining viewport so footer sits up
-       ------------------------- */
-    main.grid { display:grid; grid-template-columns: 2fr 1fr; gap:18px; margin-top:18px; align-items:start; flex:1 0 auto; }
-    @media (max-width:980px){ main.grid{ grid-template-columns: 1fr } }
-    .card { background:var(--card); border-radius:12px; padding:16px; box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.04); animation:cardIn .42s both}
-    @keyframes cardIn { from { transform:translateY(6px); opacity:0 } to { transform:none; opacity:1 } }
+    @media (max-width:1100px){ main.grid { grid-template-columns: 1fr; min-height: auto } }
+    .card{ background:var(--card); border-radius:14px; padding:18px; box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.04); animation:cardIn .42s both }
+    @keyframes cardIn{ from{transform:translateY(8px);opacity:0} to{transform:none;opacity:1} }
     .card h2{margin:0 0 8px 0;font-size:18px}
-    .hint{color:var(--muted); font-size:13px; margin-bottom:10px}
+    .hint{color:var(--muted);font-size:13px;margin-bottom:10px}
+    input, textarea, select{ width:100%; padding:12px;border-radius:10px;border:1px solid rgba(10,20,40,0.06); font-size:15px; background:transparent; color:var(--text) }
 
-    input[type="text"], input[type="number"], input[type="date"], select, textarea {
-      width:100%; padding:12px;border-radius:10px;border:1px solid rgba(10,20,40,0.06); font-size:15px; background:transparent; color:var(--text)
-    }
-    .row {display:flex; gap:10px; flex-wrap:wrap}
-    .primary { background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; padding:9px 14px; border-radius:10px; border:none; font-weight:800; cursor:pointer }
-    .ghost { background:transparent; border:1px solid rgba(0,0,0,0.06); padding:9px 12px;border-radius:10px; cursor:pointer }
+    .row{display:flex;gap:10px}
+    .primary{background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; padding:9px 14px; border-radius:10px; border:none; font-weight:800; cursor:pointer}
+    .ghost{ background:transparent; border:1px solid rgba(0,0,0,0.06); padding:9px 12px;border-radius:10px; cursor:pointer }
 
-    .result { margin-top:12px; font-weight:800; color:#0b8a66 }
-    html.dark .result { color:#57f0b6 }
+    /* Feature panel (right) sticky + scrollable */
+    aside{ align-self:start; position:relative }
+    .feature-panel{ background:var(--card); border:1px solid rgba(0,0,0,0.06); border-radius:14px; box-shadow:var(--shadow-sm); padding:12px; }
+    @media(min-width:1100px){ .feature-panel{ position:sticky; top:20px; max-height: calc(100vh - 40px); overflow:auto; padding-bottom:28px } }
+    .panel-title{font-weight:900;margin:6px 6px 12px 6px}
+    .features{ display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+    @media(max-width:700px){ .features{ grid-template-columns: 1fr } }
 
-    /* -------------------------
-       Feature panel — sticky, 6 equal boxes
-       ------------------------- */
-    aside { align-self:start; position:relative; }
-    .feature-panel{
-      background:var(--card); border:1px solid rgba(0,0,0,0.06); border-radius:12px; box-shadow:var(--shadow-sm); padding:12px;
-    }
-    @media(min-width:981px){
-      .feature-panel{ position:sticky; top:18px; max-height:calc(100vh - 36px); overflow:auto; }
-    }
-    .panel-title{font-weight:900; margin:6px 6px 12px 6px; color:var(--text)}
-    .features{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-    @media(max-width:700px){ .features{ grid-template-columns:1fr; } }
-
-    /* six equal boxes — enforced height for uniformity */
-    .feature{
-      display:flex; gap:12px; align-items:flex-start; padding:14px;
-      border-radius:12px; background:var(--card);
-      border:1px solid rgba(0,0,0,0.04); box-shadow:var(--shadow-sm);
-      min-height:118px; /* uniform height so all equal */
-    }
-    .f-icon{ width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); flex-shrink:0; font-size:22px }
+    /* exactly six equal boxes */
+    .feature{ display:flex; gap:14px; align-items:center; padding:16px; border-radius:12px; background:var(--card); border:1px solid rgba(0,0,0,0.06); box-shadow:var(--shadow-sm); min-height:110px; }
+    .f-icon{ width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--accent-start),var(--accent-end));flex-shrink:0 }
     .f-title{font-weight:800}
-    .f-desc{color:var(--muted); font-size:13px; margin-top:6px}
+    .f-desc{color:var(--muted);font-size:13px}
 
-    /* customised thin scrollbar for the feature panel */
-    .feature-panel::-webkit-scrollbar{width:9px}
-    .feature-panel::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent-start),var(--accent-end)); border-radius:999px;}
-    .feature-panel{ scrollbar-color: var(--accent-end) transparent; scrollbar-width:thin; }
-
-    /* -------------------------
-       Footer — richer, compact and dark-friendly
-       ------------------------- */
-    footer { margin-top:16px; padding:22px; border-radius:12px; background:var(--footer-grad); color: #e6f6ff; text-align:center; box-shadow:var(--shadow-lg); }
-    footer .visit { padding:12px 20px; border-radius:999px; display:inline-block; background:linear-gradient(90deg,#7b5bff 0%, #00c2d1 100%); color:white; font-weight:800; text-decoration:none }
-    footer .meta { margin-top:10px; opacity:0.9; font-size:13px; color:rgba(255,255,255,0.9); }
-
-    /* -------------------------
-       Floating PR button & scroll top button
-       ------------------------- */
-    .floating-pr {
-      position:fixed; left:18px; bottom:18px; width:60px; height:60px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center; z-index:1200;
-      background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:#fff; font-weight:900;
-      box-shadow: 0 10px 30px rgba(11,123,255,0.12);
+    /* PR badge shown bottom-left on small screens & desktop */
+    .pr-badge{
+      position:fixed; left:14px; bottom:14px; width:48px; height:48px; border-radius:12px;
+      background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:white; display:flex;align-items:center;justify-content:center;
+      font-weight:900; z-index:200; box-shadow:0 8px 24px rgba(0,0,0,0.18); cursor:pointer;
     }
-    .floating-pr a{ color:white; display:flex; align-items:center; justify-content:center; width:100%; height:100%; text-decoration:none; }
-    .scroll-top {
-      position:fixed; right:18px; bottom:18px; width:48px;height:48px;border-radius:999px;background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; display:flex;align-items:center;justify-content:center; z-index:1200; cursor:pointer; box-shadow:0 10px 30px rgba(11,123,255,0.12);
-    }
-    .muted{color:var(--muted)} .spacer{height:8px}
+    .pr-badge.small{ width:40px;height:40px; left:10px; bottom:10px }
 
-    /* small layout tightening on wide screens */
-    @media(min-width:1000px){
-      main.grid{ margin-top:10px; gap:18px; }
-      .card { padding:16px; }
-      .hero { margin-bottom:6px; }
+    /* polished footer similar to currency site */
+    footer{
+      margin-top:18px; padding:20px; border-radius:12px; background:linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02));
+      text-align:center; box-shadow:var(--shadow-lg);
+      color:var(--muted);
+    }
+    .visit{ padding:12px 20px; border-radius:999px; display:inline-block; background:linear-gradient(90deg,#ff7aa2 0%, #6b7dff 100%); color:white; font-weight:800; text-decoration:none }
+    footer small{ display:block; margin-top:10px; color:var(--muted) }
+
+    /* small helpers */
+    .muted{ color:var(--muted) }
+    .spacer{ height:8px }
+
+    /* hide sidebar by default (only opens by hamburger) */
+    .sidebar{ position:fixed; top:0; right:0; height:100vh; width:360px; max-width:94vw; transform:translateX(120%); transition:transform .28s cubic-bezier(.2,.9,.3,1); z-index:90;
+      background:var(--card); box-shadow:-40px 0 80px rgba(2,8,20,0.25); padding:20px; border-left:1px solid rgba(0,0,0,0.04); overflow:auto; border-radius:0 0 0 14px; }
+    .sidebar.open{ transform:translateX(0) }
+
+    /* input / dark tweaks */
+    html.dark input, html.dark textarea, html.dark select, html.midnight input, html.midnight textarea, html.midnight select {
+      background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); color: var(--text);
     }
 
-    /* dark inputs */
-    html.dark input, html.dark textarea, html.dark select { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); color: var(--text); }
+    /* responsive tweaks */
+    @media (max-width:1100px){
+      .logo{ width:52px;height:52px }
+      .brand-title .title-strong{ font-size:18px }
+      .container{ padding:12px }
+      .pr-badge{ left:12px; bottom:12px }
+    }
 
-    /* reduce hero -> main gap on large screens to avoid huge empty area */
-    @media(min-width:1300px){
-      .container{ padding-left:28px; padding-right:28px; }
-      .hero { margin-top:10px; padding:20px 28px; }
-      main.grid { gap:20px; }
+    /* reduce big whitespace risk on ultra-wide */
+    @media (min-width: 1600px){
+      .container{ max-width:1440px }
+      main.grid{ gap:28px }
     }
   </style>
 </head>
 <body>
   <div class="container">
-
     <!-- Header -->
     <header class="header" role="banner" aria-label="Site header">
       <div class="brand">
@@ -214,16 +169,16 @@
       </div>
 
       <div class="header-actions" role="navigation" aria-label="Header controls">
-        <!-- theme dropdown -->
         <div class="theme-select" id="themeSelectWrap">
           <button id="themeBtn" class="btn theme" title="Theme">Ocean</button>
           <div id="themeList" class="theme-list" aria-hidden="true">
             <div class="theme-item" data-theme="light">Light</div>
-            <div class="theme-item" data-theme="dark">Dark</div>
             <div class="theme-item" data-theme="ocean">Ocean</div>
-            <div class="theme-item" data-theme="sunset">Sunset</div>
+            <div class="theme-item" data-theme="dark">Dark</div>
+            <div class="theme-item" data-theme="midnight">Midnight</div>
           </div>
         </div>
+
         <div class="hamb" id="hambBtn" title="Open menu" aria-haspopup="true" aria-controls="sidebar">☰</div>
       </div>
     </header>
@@ -231,7 +186,7 @@
     <!-- HERO -->
     <section class="hero" aria-labelledby="heroTitle">
       <h1 id="heroTitle" class="big">All-in-one Utility Tools</h1>
-      <p class="small">Everyday quick tools people love — zero APIs, instant execution. Notes, stopwatch, date difference, world clock, password generator, converters and text helpers — private and lightweight.</p>
+      <p class="small">Everyday quick tools people love — zero APIs, instant execution. Notes, stopwatch, date diff, world clock, password generator, converters and text helpers — private and lightweight.</p>
 
       <div class="pills" role="tablist" aria-label="Tool tabs">
         <button class="pill active" data-target="notes">Notes</button>
@@ -249,15 +204,14 @@
 
     <!-- MAIN GRID -->
     <main class="grid" role="main">
-
-      <!-- LEFT COLUMN: Tools (unchanged logic structure) -->
+      <!-- LEFT COLUMN: Tools -->
       <div>
         <!-- Notes -->
         <section id="notes" class="card" aria-labelledby="notesTitle">
           <h2 id="notesTitle">Notes</h2>
           <div class="hint">Quick private notes — saved to localStorage (only in your browser).</div>
           <textarea id="notesArea" rows="6" placeholder="Write notes..."></textarea>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+          <div style="margin-top:10px;display:flex;gap:8px">
             <button class="primary" id="saveNotes">Save</button>
             <button class="ghost" id="clearNotes">Clear</button>
             <button class="ghost" id="exportNotes">Export</button>
@@ -271,7 +225,7 @@
           <div class="hint">Start, stop and reset. Lap support included.</div>
           <div style="font-size:28px;font-weight:800" id="swDisplay">00:00:00.00</div>
           <div style="height:10px"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px">
             <button class="primary" id="swStart">Start</button>
             <button class="ghost" id="swStop">Stop</button>
             <button class="ghost" id="swLap">Lap</button>
@@ -284,7 +238,7 @@
         <section id="datediff" class="card" hidden aria-labelledby="ddTitle">
           <h2 id="ddTitle">Date difference finder</h2>
           <div class="hint">Calculate days between two dates.</div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px;margin-top:10px">
             <input type="date" id="date1" />
             <input type="date" id="date2" />
           </div>
@@ -332,7 +286,7 @@
         <section id="password" class="card" hidden aria-labelledby="pwTitle">
           <h2 id="pwTitle">Password generator</h2>
           <div class="hint">Generate strong passwords (client-side only).</div>
-          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
             <input id="pwLen" type="number" min="4" max="64" value="16" style="width:110px" />
             <label><input id="pwUpper" type="checkbox" checked /> A-Z</label>
             <label><input id="pwLower" type="checkbox" checked /> a-z</label>
@@ -351,7 +305,7 @@
           <h2 id="cbTitle">Clipboard helpers</h2>
           <div class="hint">Quick copy/paste to browser clipboard.</div>
           <textarea id="cbInput" rows="4" placeholder="Type or paste text..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <div style="margin-top:8px;display:flex;gap:8px">
             <button class="primary" id="copyBtn">Copy to clipboard</button>
             <button class="ghost" id="pasteBtn">Paste from clipboard</button>
             <button class="ghost" id="clearCb">Clear</button>
@@ -363,7 +317,7 @@
         <section id="filesize" class="card" hidden aria-labelledby="fsTitle">
           <h2 id="fsTitle">File Size converter</h2>
           <div class="hint">Convert bytes ↔ KB ↔ MB ↔ GB.</div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px;margin-top:10px">
             <input id="fsInput" type="number" placeholder="Bytes" />
             <select id="fsUnit">
               <option value="bytes">Bytes</option>
@@ -384,7 +338,7 @@
           <h2 id="cwTitle">Character & Word counter</h2>
           <div class="hint">Paste text to count characters and words.</div>
           <textarea id="cwInput" rows="6" placeholder="Paste text here..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <div style="margin-top:8px;display:flex;gap:8px">
             <button class="primary" id="countBtn">Count</button>
             <button class="ghost" id="clearCW">Clear</button>
             <button class="ghost" id="copyCW">Copy</button>
@@ -392,12 +346,12 @@
           <div id="cwResult" class="muted" style="margin-top:8px"></div>
         </section>
 
-        <!-- Case Converter -->
+        <!-- Case conv -->
         <section id="caseconv" class="card" hidden aria-labelledby="ccTitle">
           <h2 id="ccTitle">Case Converter</h2>
           <div class="hint">Uppercase, lowercase, Title Case.</div>
           <textarea id="ccInput" rows="4" placeholder="Type or paste..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <div style="margin-top:8px;display:flex;gap:8px">
             <button class="primary" id="upperBtn">UPPERCASE</button>
             <button class="ghost" id="lowerBtn">lowercase</button>
             <button class="ghost" id="titleBtn">Title Case</button>
@@ -405,12 +359,12 @@
           </div>
         </section>
 
-        <!-- Text Formatter -->
+        <!-- Text format -->
         <section id="textformat" class="card" hidden aria-labelledby="tfTitle">
           <h2 id="tfTitle">Text Formatter / Indenter</h2>
           <div class="hint">JSON pretty-print, JSON minify, or basic tidy.</div>
           <textarea id="tfInput" rows="6" placeholder='{"hello":"world"}'></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          <div style="margin-top:8px;display:flex;gap:8px">
             <button class="primary" id="prettyBtn">JSON pretty</button>
             <button class="ghost" id="minifyBtn">JSON minify</button>
             <button class="ghost" id="copyTF">Copy</button>
@@ -418,10 +372,9 @@
           </div>
           <div id="tfMsg" class="muted" style="margin-top:8px"></div>
         </section>
-
       </div>
 
-      <!-- RIGHT COLUMN: feature panel — exactly six equal boxes -->
+      <!-- RIGHT COLUMN: feature panel (six equal boxes) -->
       <aside>
         <div class="feature-panel" role="complementary" aria-label="Features">
           <div class="panel-title">Why PirateRuler tools?</div>
@@ -429,57 +382,38 @@
           <div class="features" aria-hidden="false">
             <div class="feature">
               <div class="f-icon">⚡</div>
-              <div>
-                <div class="f-title">Lightning fast</div>
-                <div class="f-desc">Optimized code, minimal dependencies — instant results on mobile & desktop.</div>
-              </div>
+              <div><div class="f-title">Lightning fast</div><div class="f-desc">Optimized code, minimal dependencies — instant results on mobile & desktop.</div></div>
             </div>
 
             <div class="feature">
               <div class="f-icon" style="background:linear-gradient(135deg,#8ee36b,#2bbf6f)">🔒</div>
-              <div>
-                <div class="f-title">Private by design</div>
-                <div class="f-desc">No personal data is stored — everything runs in your browser.</div>
-              </div>
+              <div><div class="f-title">Private by design</div><div class="f-desc">No personal data is stored — everything runs in your browser.</div></div>
             </div>
 
             <div class="feature">
               <div class="f-icon" style="background:linear-gradient(135deg,#ffb86b,#ff6b7a)">🧰</div>
-              <div>
-                <div class="f-title">All tools in one</div>
-                <div class="f-desc">Notes, stopwatch, converters, text tools — ready to use.</div>
-              </div>
+              <div><div class="f-title">All tools in one</div><div class="f-desc">Notes, stopwatch, converters, text tools — ready to use.</div></div>
             </div>
 
             <div class="feature">
               <div class="f-icon" style="background:linear-gradient(135deg,#c471ed,#7bffdd)">🌐</div>
-              <div>
-                <div class="f-title">Backup resources</div>
-                <div class="f-desc">If this site is offline, visit PirateRuler.com for backups & resources.</div>
-              </div>
+              <div><div class="f-title">Backup resources</div><div class="f-desc">If this site is offline, visit PirateRuler.com for backups & resources.</div></div>
             </div>
 
             <div class="feature">
               <div class="f-icon" style="background:linear-gradient(135deg,#7bd6ff,#6b7dff)">📱</div>
-              <div>
-                <div class="f-title">Mobile-first</div>
-                <div class="f-desc">Looks great on phones and adapts cleanly to desktops.</div>
-              </div>
+              <div><div class="f-title">Mobile-first</div><div class="f-desc">Looks great on phones and adapts cleanly to desktops.</div></div>
             </div>
 
             <div class="feature">
               <div class="f-icon" style="background:linear-gradient(135deg,#ff7aa2,#6b7dff)">🔧</div>
-              <div>
-                <div class="f-title">Developer friendly</div>
-                <div class="f-desc">Lightweight, forkable, and transparent — easy to customize.</div>
-              </div>
+              <div><div class="f-title">Developer friendly</div><div class="f-desc">Lightweight, forkable, and transparent — easy to customize.</div></div>
             </div>
           </div>
 
           <div class="spacer"></div>
 
-          <!-- small about row to stay compact inside panel -->
-          <div class="feature" style="min-height:unset; align-items:flex-start; padding:12px">
+          <div class="feature" style="min-height:unset; align-items:flex-start; padding:14px">
             <div class="f-icon" style="background:linear-gradient(135deg,var(--accent-start),var(--accent-end))">PR</div>
             <div>
               <div class="f-title">Utility Tools</div>
@@ -490,7 +424,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </aside>
     </main>
@@ -498,21 +431,15 @@
     <!-- Footer -->
     <footer>
       <a class="visit" href="https://pirateruler.com" target="_blank" rel="noopener noreferrer">Visit PirateRuler.com</a>
-      <div style="height:12px"></div>
-      <div class="meta">© <span id="year"></span> Utility Tools by PirateRuler.com — Backup & resources: pirateruler.com</div>
+      <small>© <span id="year"></span> Utility Tools by PirateRuler.com — Backup & resources: pirateruler.com</small>
     </footer>
   </div>
 
-  <!-- Floating PR (visible on desktop & mobile) -->
-  <div class="floating-pr" title="PirateRuler home">
-    <a href="https://pirateruler.com" aria-label="PirateRuler home">PR</a>
-  </div>
+  <!-- PR badge (visible on mobile & desktop) -->
+  <div class="pr-badge" id="prBadge" title="PirateRuler">PR</div>
 
-  <!-- Scroll to top -->
-  <div class="scroll-top" id="scrollTopBtn" title="Scroll to top" style="display:none">↑</div>
-
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar" role="dialog" aria-modal="true" aria-hidden="true" style="display:none">
+  <!-- Sidebar (hidden by default) -->
+  <aside id="sidebar" class="sidebar" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="close"><button class="ghost" id="closeSidebar">Close</button></div>
     <h3>PirateRuler Links</h3>
     <p class="muted">Quick links & backup resources</p>
@@ -526,25 +453,26 @@
   </aside>
 
   <script>
-    // set footer year
+    // footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // THEMES: ocean default + persist
+    // THEME: multi-theme with Ocean default (persist)
     const root = document.documentElement;
     const themeBtn = document.getElementById('themeBtn');
     const themeList = document.getElementById('themeList');
     const themeSelectWrap = document.getElementById('themeSelectWrap');
 
     function applyTheme(t){
-      ['dark','ocean','sunset'].forEach(c=> root.classList.remove(c));
-      if(t === 'dark'){ root.classList.add('dark'); localStorage.setItem('site-theme','dark'); themeBtn.textContent='Dark'; }
-      else if(t === 'ocean'){ root.classList.add('ocean'); localStorage.setItem('site-theme','ocean'); themeBtn.textContent='Ocean'; }
-      else if(t === 'sunset'){ root.classList.add('sunset'); localStorage.setItem('site-theme','sunset'); themeBtn.textContent='Sunset'; }
-      else { localStorage.setItem('site-theme','light'); themeBtn.textContent='Light'; }
+      ['dark','ocean','midnight'].forEach(c=> root.classList.remove(c));
+      if(t === 'dark'){ root.classList.add('dark'); localStorage.setItem('site-theme','dark'); themeBtn.textContent = 'Dark' }
+      else if(t === 'ocean'){ root.classList.add('ocean'); localStorage.setItem('site-theme','ocean'); themeBtn.textContent = 'Ocean' }
+      else if(t === 'midnight'){ root.classList.add('midnight'); localStorage.setItem('site-theme','midnight'); themeBtn.textContent = 'Midnight' }
+      else { localStorage.removeItem('site-theme'); themeBtn.textContent = 'Light' }
     }
     const saved = localStorage.getItem('site-theme');
     if(saved) applyTheme(saved); else applyTheme('ocean');
 
+    // theme dropdown
     themeBtn.addEventListener('click', e => {
       themeList.classList.toggle('open');
       themeList.setAttribute('aria-hidden', String(!themeList.classList.contains('open')));
@@ -554,6 +482,7 @@
       if(!t) return;
       applyTheme(t.dataset.theme);
       themeList.classList.remove('open');
+      themeList.setAttribute('aria-hidden','true');
     });
     document.addEventListener('click', e => {
       if(!themeSelectWrap.contains(e.target)) { themeList.classList.remove('open'); themeList.setAttribute('aria-hidden','true'); }
@@ -563,13 +492,13 @@
     const sidebar = document.getElementById('sidebar');
     const hambBtn = document.getElementById('hambBtn');
     const closeSidebar = document.getElementById('closeSidebar');
-    function openSidebar(){ sidebar.style.display='block'; sidebar.classList.add('open'); sidebar.setAttribute('aria-hidden','false'); closeSidebar.focus(); }
-    function closeSB(){ sidebar.classList.remove('open'); sidebar.setAttribute('aria-hidden','true'); sidebar.style.display='none'; }
-    hambBtn && hambBtn.addEventListener('click', openSidebar);
-    closeSidebar && closeSidebar.addEventListener('click', closeSB);
+    function openSidebar(){ sidebar.classList.add('open'); sidebar.setAttribute('aria-hidden','false'); closeSidebar.focus(); }
+    function closeSB(){ sidebar.classList.remove('open'); sidebar.setAttribute('aria-hidden','true'); }
+    hambBtn.addEventListener('click', openSidebar);
+    closeSidebar.addEventListener('click', closeSB);
     document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSB(); });
 
-    // small responsive for sidebar width (if used)
+    // Ensure sidebar width responsive
     function updateSidebarWidth(){ if(window.innerWidth < 420) sidebar.style.width = '94vw'; else sidebar.style.width = '360px'; }
     window.addEventListener('resize', updateSidebarWidth);
     updateSidebarWidth();
@@ -581,7 +510,7 @@
       const el = document.getElementById(id);
       if(el) el.hidden = false;
       pills.forEach(p => p.classList.toggle('active', p.dataset.target === id));
-      // gently scroll to show
+      // ensure header not covering
       setTimeout(()=> {
         if(el){ const rect = el.getBoundingClientRect(); window.scrollTo({top: window.scrollY + rect.top - 80, behavior:'smooth'}); }
       }, 70);
@@ -589,18 +518,7 @@
     pills.forEach(p => p.addEventListener('click', ()=> showTool(p.dataset.target)));
     showTool('notes'); // default
 
-    // Floating scroll-to-top button logic
-    const scrollTopBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', ()=> {
-      if(window.scrollY > 260) scrollTopBtn.style.display = 'flex';
-      else scrollTopBtn.style.display = 'none';
-    });
-    scrollTopBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-
-    /* -------------------------
-       Existing tool JS (unchanged behaviour)
-       ------------------------- */
-    // NOTES
+    /* ------------ NOTES ------------- */
     const notesArea = document.getElementById('notesArea');
     const saveNotes = document.getElementById('saveNotes');
     const clearNotes = document.getElementById('clearNotes');
@@ -620,7 +538,7 @@
       const a = document.createElement('a'); a.href=url; a.download='notes.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
 
-    // STOPWATCH
+    /* ------------ STOPWATCH ------------- */
     let swTimer=null, swStartAt=0, swElapsed=0; const swDisplay = document.getElementById('swDisplay');
     const swStartBtn = document.getElementById('swStart'), swStopBtn = document.getElementById('swStop'), swLapBtn = document.getElementById('swLap'), swResetBtn = document.getElementById('swReset');
     const swLaps = document.getElementById('swLaps'); let laps=[];
@@ -629,30 +547,30 @@
       const s = Math.floor(ms/1000)%60; const m = Math.floor(ms/60000)%60; const h = Math.floor(ms/3600000);
       return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${milli}`;
     }
-    swStartBtn && swStartBtn.addEventListener('click', ()=>{
+    swStartBtn.addEventListener('click', ()=>{
       if(swTimer) return;
       swStartAt = Date.now() - swElapsed;
       swTimer = setInterval(()=>{ swElapsed = Date.now() - swStartAt; swDisplay.textContent = formatSw(swElapsed); }, 30);
     });
-    swStopBtn && swStopBtn.addEventListener('click', ()=> { if(!swTimer) return; clearInterval(swTimer); swTimer=null; });
-    swResetBtn && swResetBtn.addEventListener('click', ()=> { clearInterval(swTimer); swTimer=null; swElapsed=0; swDisplay.textContent='00:00:00.00'; laps=[]; swLaps.innerHTML=''; });
-    swLapBtn && swLapBtn.addEventListener('click', ()=> { if(!swTimer && swElapsed===0) return; laps.unshift(formatSw(swElapsed)); swLaps.innerHTML = laps.map(l=>`<div>${l}</div>`).join(''); });
+    swStopBtn.addEventListener('click', ()=> { if(!swTimer) return; clearInterval(swTimer); swTimer=null; });
+    swResetBtn.addEventListener('click', ()=> { clearInterval(swTimer); swTimer=null; swElapsed=0; swDisplay.textContent='00:00:00.00'; laps=[]; swLaps.innerHTML=''; });
+    swLapBtn.addEventListener('click', ()=> { if(!swTimer && swElapsed===0) return; laps.unshift(formatSw(swElapsed)); swLaps.innerHTML = laps.map(l=>`<div>${l}</div>`).join(''); });
 
-    // DATE DIFF
+    /* ------------ DATE DIFF ------------- */
     const date1 = document.getElementById('date1'), date2 = document.getElementById('date2'), calcDate = document.getElementById('calcDate'), clearDate = document.getElementById('clearDate'), dateOut = document.getElementById('dateOut');
-    calcDate && calcDate.addEventListener('click', ()=>{
+    calcDate.addEventListener('click', ()=>{
       if(!date1.value || !date2.value){ dateOut.textContent = 'Choose both dates'; return; }
       const a=new Date(date1.value), b=new Date(date2.value); if(isNaN(a)||isNaN(b)){ dateOut.textContent='Invalid date(s)'; return; }
       const ms = Math.abs(b-a); const days = Math.floor(ms/(1000*60*60*24));
       dateOut.textContent = days===0? 'Same day': days + ' day' + (days>1?'s':'');
     });
-    clearDate && clearDate.addEventListener('click', ()=> { date1.value=''; date2.value=''; dateOut.textContent=''; });
+    clearDate.addEventListener('click', ()=> { date1.value=''; date2.value=''; dateOut.textContent=''; });
 
-    // WORLD CLOCK
+    /* ------------ WORLD CLOCK ------------- */
     const tzSelect = document.getElementById('tzSelect'), addTz = document.getElementById('addTz'), tzList = document.getElementById('tzList');
     function updateTzDisplay(){
       const now = new Date();
-      tzList && tzList.querySelectorAll('.tz-item').forEach(node=>{
+      tzList.querySelectorAll('.tz-item').forEach(node=>{
         const zone = node.dataset.zone;
         try{
           const opts = {timeZone: zone, hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'};
@@ -662,7 +580,7 @@
         }
       });
     }
-    addTz && addTz.addEventListener('click', ()=>{
+    addTz.addEventListener('click', ()=>{
       const zone = tzSelect.value;
       if(!zone) return;
       if(Array.from(tzList.children).some(c=>c.dataset.zone === zone)) return;
@@ -675,9 +593,9 @@
     });
     setInterval(updateTzDisplay,1000);
 
-    // PASSWORD
+    /* ------------ PASSWORD GENERATOR ------------- */
     const genPw = document.getElementById('genPw'), copyPw = document.getElementById('copyPw'), pwOut = document.getElementById('pwOut');
-    genPw && genPw.addEventListener('click', ()=>{
+    genPw.addEventListener('click', ()=>{
       const len = parseInt(document.getElementById('pwLen').value) || 16;
       const upper = document.getElementById('pwUpper').checked;
       const lower = document.getElementById('pwLower').checked;
@@ -699,17 +617,17 @@
       }
       pwOut.value = out;
     });
-    copyPw && copyPw.addEventListener('click', ()=> { if(!pwOut.value) return; navigator.clipboard.writeText(pwOut.value).then(()=> alert('Copied')) });
+    copyPw.addEventListener('click', ()=> { if(!pwOut.value) return; navigator.clipboard.writeText(pwOut.value).then(()=> alert('Copied')) });
 
-    // CLIPBOARD
+    /* ------------ CLIPBOARD ------------- */
     const copyBtn = document.getElementById('copyBtn'), pasteBtn = document.getElementById('pasteBtn'), cbInput = document.getElementById('cbInput'), clearCb = document.getElementById('clearCb'), cbMsg = document.getElementById('cbMsg');
-    copyBtn && copyBtn.addEventListener('click', ()=> navigator.clipboard.writeText(cbInput.value || '').then(()=> { cbMsg.textContent='Copied'; setTimeout(()=> cbMsg.textContent='',1200); }).catch(()=> cbMsg.textContent='Failed' ));
-    pasteBtn && pasteBtn.addEventListener('click', async ()=> { try{ const t = await navigator.clipboard.readText(); cbInput.value = t; cbMsg.textContent='Pasted'; setTimeout(()=> cbMsg.textContent='',1200); }catch(e){ cbMsg.textContent='Paste failed'; } });
-    clearCb && clearCb.addEventListener('click', ()=> { cbInput.value=''; cbMsg.textContent=''; });
+    copyBtn.addEventListener('click', ()=> navigator.clipboard.writeText(cbInput.value || '').then(()=> { cbMsg.textContent='Copied'; setTimeout(()=> cbMsg.textContent='',1200); }).catch(()=> cbMsg.textContent='Failed' ));
+    pasteBtn.addEventListener('click', async ()=> { try{ const t = await navigator.clipboard.readText(); cbInput.value = t; cbMsg.textContent='Pasted'; setTimeout(()=> cbMsg.textContent='',1200); }catch(e){ cbMsg.textContent='Paste failed'; } });
+    clearCb.addEventListener('click', ()=> { cbInput.value=''; cbMsg.textContent=''; });
 
-    // FILE SIZE
+    /* ------------ FILE SIZE ------------- */
     const convFs = document.getElementById('convFs'), clearFs = document.getElementById('clearFs'), fsInput = document.getElementById('fsInput'), fsUnit = document.getElementById('fsUnit'), fsOut = document.getElementById('fsOut');
-    convFs && convFs.addEventListener('click', ()=> {
+    convFs.addEventListener('click', ()=> {
       const v = parseFloat(fsInput.value);
       const u = fsUnit.value;
       if(isNaN(v)){ fsOut.textContent='Enter a number'; return; }
@@ -719,38 +637,38 @@
       if(u === 'gb') bytes = v * 1024 * 1024 * 1024;
       fsOut.textContent = `Bytes: ${bytes} • KB: ${(bytes/1024).toFixed(3)} • MB: ${(bytes/(1024*1024)).toFixed(3)}`;
     });
-    clearFs && clearFs.addEventListener('click', ()=> { fsInput.value=''; fsOut.textContent=''; });
+    clearFs.addEventListener('click', ()=> { fsInput.value=''; fsOut.textContent=''; });
 
-    // CHAR & WORD
+    /* ------------ CHAR & WORD ------------- */
     const cwInput = document.getElementById('cwInput'), countBtn = document.getElementById('countBtn'), clearCW = document.getElementById('clearCW'), cwResult = document.getElementById('cwResult'), copyCW = document.getElementById('copyCW');
-    countBtn && countBtn.addEventListener('click', ()=> {
+    countBtn.addEventListener('click', ()=> {
       const t = cwInput.value || '';
       const chars = t.length;
       const words = t.trim().length ? t.trim().split(/\s+/).length : 0;
       cwResult.textContent = `${words} words • ${chars} characters`;
     });
-    clearCW && clearCW.addEventListener('click', ()=> { cwInput.value=''; cwResult.textContent=''; });
-    copyCW && copyCW.addEventListener('click', ()=> navigator.clipboard.writeText(cwInput.value || '').then(()=> alert('Copied')));
+    clearCW.addEventListener('click', ()=> { cwInput.value=''; cwResult.textContent=''; });
+    copyCW.addEventListener('click', ()=> navigator.clipboard.writeText(cwInput.value || '').then(()=> alert('Copied')));
 
-    // CASE CONVERTER
+    /* ------------ CASE CONVERTER ------------- */
     const ccInput = document.getElementById('ccInput'), upperBtn = document.getElementById('upperBtn'), lowerBtn = document.getElementById('lowerBtn'), titleBtn = document.getElementById('titleBtn'), copyCase = document.getElementById('copyCase');
-    upperBtn && upperBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toUpperCase());
-    lowerBtn && lowerBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase());
-    titleBtn && titleBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase().replace(/\b\w/g, s => s.toUpperCase()));
-    copyCase && copyCase.addEventListener('click', ()=> navigator.clipboard.writeText(ccInput.value || '').then(()=> alert('Copied')));
+    upperBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toUpperCase());
+    lowerBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase());
+    titleBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase().replace(/\b\w/g, s => s.toUpperCase()));
+    copyCase.addEventListener('click', ()=> navigator.clipboard.writeText(ccInput.value || '').then(()=> alert('Copied')));
 
-    // TEXT FORMAT
+    /* ------------ TEXT FORMAT ------------- */
     const tfInput = document.getElementById('tfInput'), prettyBtn = document.getElementById('prettyBtn'), minifyBtn = document.getElementById('minifyBtn'), copyTF = document.getElementById('copyTF'), clearTF = document.getElementById('clearTF'), tfMsg = document.getElementById('tfMsg');
-    prettyBtn && prettyBtn.addEventListener('click', ()=>{
+    prettyBtn.addEventListener('click', ()=>{
       try{ const v = JSON.parse(tfInput.value); tfInput.value = JSON.stringify(v,null,2); tfMsg.textContent='Formatted'; setTimeout(()=>tfMsg.textContent='',1400); }catch(e){ tfMsg.textContent='Invalid JSON'; setTimeout(()=>tfMsg.textContent='',1800); }
     });
-    minifyBtn && minifyBtn.addEventListener('click', ()=>{
+    minifyBtn.addEventListener('click', ()=>{
       try{ const v = JSON.parse(tfInput.value); tfInput.value = JSON.stringify(v); tfMsg.textContent='Minified'; setTimeout(()=>tfMsg.textContent='',1400); }catch(e){ tfMsg.textContent='Invalid JSON'; setTimeout(()=>tfMsg.textContent='',1800); }
     });
-    copyTF && copyTF.addEventListener('click', ()=> navigator.clipboard.writeText(tfInput.value || '').then(()=> { tfMsg.textContent='Copied'; setTimeout(()=>tfMsg.textContent='',1200); }));
-    clearTF && clearTF.addEventListener('click', ()=> { tfInput.value=''; tfMsg.textContent=''; });
+    copyTF.addEventListener('click', ()=> navigator.clipboard.writeText(tfInput.value || '').then(()=> { tfMsg.textContent='Copied'; setTimeout(()=>tfMsg.textContent='',1200); }));
+    clearTF.addEventListener('click', ()=> { tfInput.value=''; tfMsg.textContent=''; });
 
-    // accessibility: close sidebar on outside click
+    /* close sidebar on outside click */
     document.addEventListener('click', function(e){
       if(!sidebar.classList.contains('open')) return;
       const inside = sidebar.contains(e.target) || hambBtn.contains(e.target);
@@ -767,6 +685,29 @@
       if(e.key.toLowerCase() === 'w') showTool('worldclock');
       if(e.key.toLowerCase() === 't') showTool('textformat');
     });
+
+    // PR badge click => open main site
+    document.getElementById('prBadge').addEventListener('click', ()=> window.open('https://pirateruler.com','_blank'));
+
+    // ensure grid min-height adjusts a little on resize (keeps footer visible)
+    function adjustGridMinHeight(){
+      const mainGrid = document.querySelector('main.grid');
+      if(!mainGrid) return;
+      if(window.innerWidth < 1100) mainGrid.style.minHeight = 'auto';
+      else {
+        // estimate header+hero+footer height and subtract from viewport; this reduces the big gaps
+        const header = document.querySelector('header.header').getBoundingClientRect().height || 110;
+        const hero = document.querySelector('.hero').getBoundingClientRect().height || 240;
+        const footer = document.querySelector('footer').getBoundingClientRect().height || 100;
+        const reserve = 80; // breathing room
+        const minH = Math.max(300, window.innerHeight - (header + hero + footer) - reserve);
+        mainGrid.style.minHeight = minH + 'px';
+      }
+    }
+    window.addEventListener('resize', adjustGridMinHeight);
+    window.addEventListener('load', adjustGridMinHeight);
+    setTimeout(adjustGridMinHeight, 300);
+
   </script>
 </body>
 </html>
