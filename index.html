@@ -4,549 +4,549 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Utility Tools — PirateRuler</title>
-<link rel="icon" href="data:,">
 <style>
   :root{
-    --bg: #f4f7fb;
-    --card: #ffffff;
-    --muted: #6b7785;
-    --accent1: linear-gradient(90deg,#5fb0ff 0%, #7b6bff 100%);
-    --glow: rgba(91,130,255,0.25);
-    --text: #0e2433;
-    --radius: 18px;
-    --soft-shadow: 0 8px 18px rgba(16,24,40,0.06);
-    --soft-shadow-2: 0 20px 40px rgba(16,24,40,0.06);
+    --bg:#eef6fb;
+    --card:#ffffff;
+    --muted:#718096;
+    --accent1:#5fb2ff;
+    --accent2:#7a4bff;
+    --shadow: 0 10px 30px rgba(10,26,46,0.08);
+    --radius:18px;
+    --glass: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7));
+  }
+  [data-theme="dark"]{
+    --bg:#08111a;
+    --card:#07101a;
+    --muted:#93a4b5;
+    --accent1:#6ad1ff;
+    --accent2:#7a9bff;
+    --shadow: 0 10px 30px rgba(5,9,14,0.8);
+    --glass: linear-gradient(180deg, rgba(12,23,34,0.95), rgba(8,14,21,0.9));
   }
 
-  .dark{
-    --bg: #081223;
-    --card: #071022;
-    --muted: #9aa8b6;
-    --text: #e6f0f7;
-    --accent1: linear-gradient(90deg,#3397ff 0%, #8b6eff 100%);
-    --glow: rgba(80,120,200,0.14);
-    --soft-shadow: 0 8px 18px rgba(0,0,0,0.6);
-    --soft-shadow-2: 0 20px 40px rgba(0,0,0,0.6);
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text,#071633); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  .wrap{max-width:760px;margin:28px auto;padding:20px;}
+
+  /* header (neumorphism card) */
+  .header{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;padding:18px;border-radius:18px;background:var(--glass);box-shadow:var(--shadow);
+    backdrop-filter: blur(6px);
   }
+  .brand{display:flex;gap:14px;align-items:center;}
+  .logo{
+    width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:20px;box-shadow:0 6px 18px rgba(30,60,120,0.12);
+  }
+  .title{line-height:1;}
+  .title h1{margin:0;font-size:22px;font-weight:800;color:var(--text,#071633);}
+  .title p{margin:0;color:var(--muted);font-size:14px;letter-spacing:0.1px;}
 
-  html,body{height:100%;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; color:var(--text); -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:820px;margin:24px auto;padding:16px;}
-
-  /* header */
-  .hdr{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:var(--soft-shadow);}
-  .logo{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;background:linear-gradient(135deg,#3aa2ff,#7b6bff);box-shadow: 0 8px 20px rgba(59,129,227,0.18);}
-  .title{display:flex;flex-direction:column;line-height:1;}
-  .title h1{font-size:20px;margin:0;padding:0;font-weight:700;}
-  .title small{font-size:13px;color:var(--muted);margin-top:4px;}
-
-  .hdr-controls{margin-left:auto;display:flex;gap:10px;align-items:center;}
-  .theme-toggle{border-radius:999px;padding:8px 12px; background:var(--card);box-shadow:var(--soft-shadow);cursor:pointer; display:flex;align-items:center; gap:8px;}
-  .theme-toggle .dot{width:18px;height:18px;border-radius:50%;background:var(--accent1);box-shadow:0 8px 28px var(--glow);}
-  .menu-btn{width:44px;height:44px;border-radius:10px;background:var(--card);box-shadow:var(--soft-shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  /* controls on right */
+  .controls{display:flex;gap:12px;align-items:center;}
+  .theme-toggle{
+    padding:10px 18px;border-radius:16px;background:var(--card);box-shadow:inset 0 -2px 0 rgba(0,0,0,0.03);
+    display:flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,0.03);cursor:pointer;
+  }
+  .theme-dot{
+    width:20px;height:20px;border-radius:999px;background:linear-gradient(135deg,var(--accent1),var(--accent2));box-shadow:0 6px 18px rgba(90,120,200,0.2);
+  }
+  .menu-btn{width:52px;height:44px;border-radius:12px;background:var(--card);display:grid;place-items:center;border:1px solid rgba(0,0,0,0.03);cursor:pointer}
 
   /* hero card */
-  .hero{background:var(--card);border-radius:22px;padding:26px;margin-top:18px;box-shadow:var(--soft-shadow-2);}
-  .hero h2{font-size:30px;margin:4px 0 10px 0;text-align:center;}
-  .hero p{color:var(--muted);text-align:center;line-height:1.6;margin:0 0 18px 0;}
-  .tool-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px;}
-  .tool-btn{padding:10px 18px;border-radius:28px;background:transparent;border:1px solid rgba(0,0,0,0.06);min-width:96px;text-align:center;color:var(--text);cursor:pointer;box-shadow:var(--soft-shadow);}
-  .tool-btn.active{background:var(--accent1);color:#fff;box-shadow:0 14px 40px var(--glow);transform:translateY(-2px);}
+  .hero{margin-top:20px;padding:34px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);}
+  .hero h2{margin:0;text-align:center;font-size:34px;line-height:1.02;font-weight:900;color:var(--text,#071633);}
+  .hero p{max-width:640px;margin:14px auto 20px;color:var(--muted);text-align:center;}
 
-  /* cards */
-  .card{background:var(--card);border-radius:16px;padding:18px;margin-top:18px;box-shadow:var(--soft-shadow-2);}
-  .card h3{margin:0 0 10px 0;}
-  .muted{color:var(--muted);font-size:15px;}
+  /* tool buttons */
+  .tool-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:6px}
+  .tool-btn{padding:10px 18px;border-radius:999px;background:transparent;border:1px solid rgba(0,0,0,0.06);cursor:pointer;color:var(--text,#071633);font-weight:600;min-width:92px;text-align:center}
+  .tool-btn.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;box-shadow:0 10px 30px rgba(90,120,200,0.12);}
 
-  /* calculator-like buttons and inputs */
-  input[type="text"], textarea{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);box-shadow:var(--soft-shadow);background:transparent;color:var(--text);font-size:15px;}
-  .btn-row{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
-  .btn{padding:12px 18px;border-radius:12px;background:var(--card);border:1px solid rgba(0,0,0,0.06);cursor:pointer;box-shadow:var(--soft-shadow);}
-  .btn.primary{background:var(--accent1);color:#fff;box-shadow:0 18px 40px var(--glow);}
+  /* sections */
+  .section{margin-top:22px;padding:22px;border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+  .section h3{margin:0 0 8px 0;font-size:20px;color:var(--text,#071633)}
+  .muted{color:var(--muted);}
 
-  /* responsive sizing */
-  @media (max-width:520px){
-    .hero h2{font-size:24px;}
-    .title h1{font-size:18px;}
-    .logo{width:48px;height:48px;}
-  }
+  /* input and buttons */
+  .input, textarea, select{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.06);background:rgba(255,255,255,0.9);font-size:15px;color:var(--text);}
+  [data-theme="dark"] .input{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+  .row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .btn{padding:12px 20px;border-radius:12px;background:var(--card);border:1px solid rgba(0,0,0,0.06);cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;box-shadow:0 10px 30px rgba(90,120,200,0.14);border:none}
+
+  /* footer */
+  .footer{margin-top:26px;padding:20px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);text-align:center}
+  .cta{display:inline-block;padding:12px 28px;border-radius:28px;background:linear-gradient(90deg,#ff66a8,#7a4bff);color:white;font-weight:700;box-shadow:0 12px 36px rgba(120,70,200,0.18);text-decoration:none}
 
   /* sidebar modal */
-  .sidebar{position:fixed;right:0;top:0;height:100%;width:92%;max-width:360px;background:var(--card);box-shadow:-20px 0 60px rgba(0,0,0,0.06);transform:translateX(110%);transition:transform .28s cubic-bezier(.2,.9,.26,1);z-index:40;padding:18px;border-left:1px solid rgba(0,0,0,0.03);}
-  .sidebar.open{transform:translateX(0);}
-  .sidebar .close{display:block;margin-left:auto;border-radius:10px;padding:8px 12px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.18);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .2s;}
-  .overlay.show{opacity:1;pointer-events:auto;}
+  .sidebar{position:fixed;right:16px;top:90px;z-index:60;max-width:360px;width:84%;background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;display:none}
+  .sidebar.open{display:block}
+  .sidebar a{display:block;padding:12px;border-radius:10px;background:transparent;color:var(--text);text-decoration:none;margin-bottom:10px;border:1px solid rgba(0,0,0,0.03)}
+  @media(min-width:860px){ .wrap{max-width:920px;} .sidebar{right:40px;top:40px;width:360px;} }
 
-  /* world clock list */
-  .tz-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;justify-content:center;}
-  .tz-chip{padding:6px 10px;border-radius:12px;background:transparent;border:1px solid rgba(0,0,0,0.06);cursor:pointer;}
-  .tz-chip.active{background:var(--accent1);color:#fff;box-shadow:0 10px 30px var(--glow);}
+  /* utilities boxes (rows like calculator site) */
+  .feature-row{display:flex;flex-direction:column;gap:12px}
+  .feature{display:flex;gap:14px;align-items:center;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));box-shadow:inset 0 -2px 0 rgba(0,0,0,0.02)}
+  [data-theme="dark"] .feature{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));}
+  .feature .ico{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#ff8fa6,#7a4bff);display:grid;place-items:center;color:white;font-weight:700}
 
-  /* footer big CTA */
-  .cta{margin-top:20px;padding:18px;border-radius:14px;text-align:center;background:var(--card);box-shadow:var(--soft-shadow);}
-  .big-btn{display:inline-block;padding:12px 26px;border-radius:30px;background:linear-gradient(90deg,#ff6b9a,#7b6bff);color:white;text-decoration:none;font-weight:700;box-shadow:0 20px 60px rgba(123,107,255,0.18);}
+  /* small responsive adjustments */
+  @media(max-width:420px){
+    .title h1{font-size:18px} .title p{font-size:13px}
+    .logo{width:52px;height:52px} .header{padding:14px}
+    .hero h2{font-size:26px}
+  }
 </style>
 </head>
-<body>
+<body data-theme="light">
+<div class="wrap">
 
-<div class="wrap" id="wrap">
-  <!-- Header -->
-  <div class="hdr" role="banner">
-    <div class="logo">PR</div>
-    <div class="title">
-      <h1 id="siteTitle">Utility Tools</h1>
-      <small id="siteBy">by PirateRuler.com</small>
+  <!-- header -->
+  <div class="header" role="banner">
+    <div class="brand">
+      <div class="logo">PR</div>
+      <div class="title">
+        <h1 id="site-title">Utility Tools</h1>
+        <!-- Ensure "by PirateRuler.com" sits on the same line after "by" -->
+        <p id="byline">by <span style="font-weight:700;color:var(--muted);">PirateRuler.com</span></p>
+      </div>
     </div>
 
-    <div class="hdr-controls">
-      <div class="theme-toggle" id="themeToggle" title="Toggle theme">
-        <div class="dot" id="themeDot" aria-hidden="true"></div>
-        <div style="font-size:13px;color:var(--muted);margin-left:6px" id="themeLabel">Light</div>
+    <div class="controls">
+      <div class="theme-toggle" id="themeToggle" role="button" aria-pressed="false" title="Toggle theme">
+        <div class="theme-dot" id="themeDot"></div>
+        <div id="themeLabel" style="color:var(--muted)">Light</div>
       </div>
-      <div class="menu-btn" id="menuBtn" aria-label="Open menu">☰</div>
+      <div class="menu-btn" id="openSidebar" aria-label="Open menu">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="#4A5568"/><rect y="6" width="20" height="2" rx="1" fill="#4A5568"/><rect y="12" width="20" height="2" rx="1" fill="#4A5568"/></svg>
+      </div>
     </div>
   </div>
 
-  <!-- Hero / Tools grid -->
+  <!-- hero -->
   <div class="hero">
     <h2>All-in-one Utility Tools</h2>
     <p class="muted">Everyday quick tools people love — zero APIs, instant execution. Notes, stopwatch, date difference, world clock, password generator, converters and text helpers — private and lightweight.</p>
 
     <div class="tool-grid" id="toolGrid">
-      <!-- will be built by JS -->
+      <button class="tool-btn active" data-tool="notes">Notes</button>
+      <button class="tool-btn" data-tool="stopwatch">Stopwatch</button>
+      <button class="tool-btn" data-tool="datediff">Date Diff</button>
+      <button class="tool-btn" data-tool="worldclock">World Clock</button>
+      <button class="tool-btn" data-tool="password">Password</button>
+      <button class="tool-btn" data-tool="clipboard">Clipboard</button>
+      <button class="tool-btn" data-tool="filesize">File Size</button>
+      <button class="tool-btn" data-tool="charword">Char/Word</button>
+      <button class="tool-btn" data-tool="caseconv">Case Conv</button>
+      <button class="tool-btn" data-tool="textformat">Text Format</button>
     </div>
   </div>
 
-  <!-- Example tool cards -->
-  <div class="card" id="toolArea">
-    <!-- dynamic content -->
-    <div class="muted">Pick a tool above to open it.</div>
-  </div>
-
-  <div class="card cta">
-    <a href="https://pirateruler.com" class="big-btn" target="_blank" rel="noopener">Visit PirateRuler.com</a>
-    <p style="color:var(--muted);margin-top:12px">Utility Tools by PirateRuler.com — lightweight, private web utilities you can run anywhere.</p>
-  </div>
-</div>
-
-<!-- Sidebar -->
-<div class="overlay" id="overlay"></div>
-<aside class="sidebar" id="sidebar" role="dialog" aria-hidden="true">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div class="logo">PR</div>
-    <div>
-      <div style="font-weight:700;font-size:18px">Utility Tools</div>
-      <div style="color:var(--muted);font-size:13px">by PirateRuler.com</div>
-    </div>
-    <div style="margin-left:auto">
-      <button class="close" id="closeSidebar">Close</button>
-    </div>
-  </div>
-
-  <div style="margin-top:18px">
-    <h4 style="margin:0 0 8px 0;">PirateRuler Links</h4>
-    <div class="muted">Quick links & backup resources</div>
-    <div style="margin-top:12px;">
-      <div style="margin-bottom:10px"><a href="https://pirateruler.com" target="_blank">Open PirateRuler.com</a></div>
-      <div style="margin-bottom:6px">About — PirateRuler</div>
-      <div style="margin-bottom:6px">Privacy Policy</div>
-      <div style="margin-bottom:6px">Contact</div>
-      <div style="margin-bottom:6px">Terms & Service</div>
-    </div>
-  </div>
-</aside>
-
-<script>
-/* ---------- Config & tools list ---------- */
-const tools = [
-  {id:'notes', title:'Notes', desc:'Small note saver (local only).'},
-  {id:'stopwatch', title:'Stopwatch', desc:'Start / stop / reset timer.'},
-  {id:'datediff', title:'Date Diff', desc:'Days between two dates.'},
-  {id:'worldclock', title:'World Clock', desc:'See multiple timezones at once.'},
-  {id:'password', title:'Password', desc:'Secure random password generator.'},
-  {id:'clipboard', title:'Clipboard', desc:'Quick copy/paste helpers.'},
-  {id:'filesize', title:'File Size', desc:'KB/MB/GB converter.'},
-  {id:'charcount', title:'Char/Word', desc:'Character & word counter.'},
-  {id:'case', title:'Case Conv', desc:'Upper / lower / title case.'},
-  {id:'textformat', title:'Text Format', desc:'JSON pretty / minify, HTML tidy.'},
-];
-
-/* ---------- UI build ---------- */
-const grid = document.getElementById('toolGrid');
-const toolArea = document.getElementById('toolArea');
-
-tools.forEach(t=>{
-  const b = document.createElement('button');
-  b.className='tool-btn';
-  b.textContent = t.title;
-  b.dataset.id = t.id;
-  b.title = t.desc;
-  b.addEventListener('click', ()=> openTool(t.id));
-  grid.appendChild(b);
-});
-
-/* ---------- Theme toggle (light default) ---------- */
-const root = document.documentElement;
-const wrap = document.getElementById('wrap');
-const themeToggle = document.getElementById('themeToggle');
-const themeLabel = document.getElementById('themeLabel');
-const themeDot = document.getElementById('themeDot');
-
-function setTheme(name){
-  if(name === 'dark'){
-    document.documentElement.classList.add('dark');
-    themeLabel.textContent = 'Dark';
-    localStorage.setItem('pr-theme','dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-    themeLabel.textContent = 'Light';
-    localStorage.setItem('pr-theme','light');
-  }
-}
-const saved = localStorage.getItem('pr-theme') || 'light';
-setTheme(saved);
-
-themeToggle.addEventListener('click', ()=>{
-  const now = localStorage.getItem('pr-theme') === 'dark' ? 'light' : 'dark';
-  setTheme(now);
-});
-
-/* ---------- Sidebar ---------------- */
-const menuBtn = document.getElementById('menuBtn');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const closeSidebar = document.getElementById('closeSidebar');
-
-function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('show'); sidebar.setAttribute('aria-hidden','false'); }
-function closeS(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); sidebar.setAttribute('aria-hidden','true'); }
-
-menuBtn.addEventListener('click', openSidebar);
-closeSidebar.addEventListener('click', closeS);
-overlay.addEventListener('click', closeS);
-
-/* ---------- Tool opening & rendering ---------- */
-function clearActiveButtons(){
-  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
-}
-
-function openTool(id){
-  clearActiveButtons();
-  const btn = document.querySelector(`.tool-btn[data-id="${id}"]`);
-  if(btn) btn.classList.add('active');
-
-  // render the tool area
-  switch(id){
-    case 'notes': renderNotes(); break;
-    case 'stopwatch': renderStopwatch(); break;
-    case 'datediff': renderDateDiff(); break;
-    case 'worldclock': renderWorldClock(); break;
-    case 'password': renderPassword(); break;
-    case 'clipboard': renderClipboard(); break;
-    case 'filesize': renderFileSize(); break;
-    case 'charcount': renderCharCount(); break;
-    case 'case': renderCaseConv(); break;
-    case 'textformat': renderTextFormat(); break;
-    default: toolArea.innerHTML = '<div class="muted">Tool not found.</div>';
-  }
-
-  // scroll to the card
-  toolArea.scrollIntoView({behavior:'smooth',block:'center'});
-}
-
-/* ---------- Tools Implementation ---------- */
-
-/* NOTES (localStorage) */
-function renderNotes(){
-  toolArea.innerHTML = `
-    <div class="card">
+  <!-- sections (one container, we show/hide panels) -->
+  <div id="panels">
+    <!-- Notes (placeholder) -->
+    <section class="section" data-panel="notes">
       <h3>Notes</h3>
-      <div class="muted">Quick notes stored locally in your browser.</div>
-      <textarea id="notesText" rows="6" placeholder="Type notes..."></textarea>
-      <div class="btn-row">
-        <button class="btn primary" id="saveNotes">Save</button>
+      <p class="muted">Simple auto-saving note — saved to localStorage in your browser only.</p>
+      <textarea id="notesArea" rows="6" class="input" placeholder="Write notes..."></textarea>
+      <div class="row">
         <button class="btn" id="clearNotes">Clear</button>
+        <button class="btn primary" id="saveNotes">Save</button>
       </div>
-    </div>`;
-  const ta = document.getElementById('notesText');
-  const saved = localStorage.getItem('pr-notes') || '';
-  ta.value = saved;
-  document.getElementById('saveNotes').onclick = ()=> { localStorage.setItem('pr-notes', ta.value); toast('Saved'); };
-  document.getElementById('clearNotes').onclick = ()=> { ta.value=''; localStorage.removeItem('pr-notes'); toast('Cleared'); };
-}
+    </section>
 
-/* STOPWATCH */
-function renderStopwatch(){
-  toolArea.innerHTML = `
-    <div class="card">
+    <!-- Stopwatch -->
+    <section class="section" data-panel="stopwatch" style="display:none">
       <h3>Stopwatch</h3>
-      <div class="muted">Simple stopwatch with lap support.</div>
-      <div style="font-size:26px;font-weight:700;margin-top:14px" id="swDisplay">00:00:00.0</div>
-      <div style="margin-top:12px" id="laps"></div>
-      <div class="btn-row" style="margin-top:14px">
+      <p class="muted">Start, pause or reset the stopwatch. Time runs locally.</p>
+      <div style="font-size:28px;font-weight:800;margin:12px 0" id="swDisplay">00:00.00</div>
+      <div class="row">
         <button class="btn primary" id="swStart">Start</button>
-        <button class="btn" id="swLap">Lap</button>
+        <button class="btn" id="swStop">Stop</button>
         <button class="btn" id="swReset">Reset</button>
       </div>
-    </div>`;
-  let running=false, start=0, elapsed=0, timer=null, laps=[];
-  const display = document.getElementById('swDisplay'), lapsEl = document.getElementById('laps');
-  function fmt(ms){
-    const h=Math.floor(ms/3600000); ms%=3600000;
-    const m=Math.floor(ms/60000); ms%=60000;
-    const s=Math.floor(ms/1000); const d=Math.floor(ms/100);
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${d}`;
-  }
-  function tick(){ const now = Date.now(); display.textContent = fmt(elapsed + (running ? now-start : 0)); }
-  document.getElementById('swStart').onclick = function(){
-    if(!running){
-      running=true; start=Date.now(); this.textContent='Stop';
-      timer = setInterval(tick,100); toast('Started');
-    } else {
-      running=false; elapsed += Date.now()-start; clearInterval(timer); this.textContent='Start'; toast('Stopped');
-    }
-  };
-  document.getElementById('swLap').onclick = function(){
-    const time = elapsed + (running ? Date.now()-start : 0);
-    laps.unshift(time);
-    lapsEl.innerHTML = laps.map((l,i)=>`<div style="padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.04)">${i+1}. ${fmt(l)}</div>`).join('');
-  };
-  document.getElementById('swReset').onclick = function(){ running=false; clearInterval(timer); elapsed=0; laps=[]; display.textContent='00:00:00.0'; lapsEl.innerHTML=''; document.getElementById('swStart').textContent='Start'; toast('Reset'); };
-  tick();
-}
+    </section>
 
-/* DATE DIFFERENCE */
-function renderDateDiff(){
-  toolArea.innerHTML = `
-    <div class="card">
-      <h3>Date Difference</h3>
-      <div class="muted">Days between two dates.</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <input type="date" id="d1">
-        <input type="date" id="d2">
+    <!-- Date Difference -->
+    <section class="section" data-panel="datediff" style="display:none">
+      <h3>Date difference finder</h3>
+      <p class="muted">Calculate days between two dates.</p>
+      <div class="row">
+        <input class="input" type="date" id="dateA"><input class="input" type="date" id="dateB">
       </div>
-      <div class="btn-row">
-        <button class="btn primary" id="calcDate">Calculate</button>
-        <div id="dateResult" style="align-self:center;color:var(--muted);margin-left:6px"></div>
+      <div class="row">
+        <button class="btn primary" id="calcDiff">Calculate</button>
+        <div id="diffResult" style="align-self:center;margin-left:8px;color:var(--muted)"></div>
       </div>
-    </div>`;
-  document.getElementById('calcDate').onclick = ()=>{
-    const d1 = document.getElementById('d1').value, d2=document.getElementById('d2').value;
-    if(!d1||!d2){ toast('Select both dates'); return; }
-    const diff = Math.abs(new Date(d2)-new Date(d1));
-    const days = Math.floor(diff/86400000);
-    document.getElementById('dateResult').textContent = `${days} day(s)`;
-  };
-}
+    </section>
 
-/* WORLD CLOCK */
-function renderWorldClock(){
-  toolArea.innerHTML = `
-    <div class="card">
-      <h3>World Clock</h3>
-      <div class="muted">See times in multiple time zones (updates every second).</div>
-      <div class="tz-row" id="tzRow"></div>
-      <div style="margin-top:12px" id="tzList"></div>
-    </div>`;
-  const tzs = [
-    {id:'local', label:'Local'},
-    {id:'UTC', label:'UTC'},
-    {id:'America/New_York', label:'New York'},
-    {id:'Europe/London', label:'London'},
-    {id:'Europe/Paris', label:'Paris'},
-    {id:'Asia/Dubai', label:'Dubai'},
-    {id:'Asia/Kolkata', label:'India'},
-    {id:'Asia/Tokyo', label:'Tokyo'},
-    {id:'Australia/Sydney', label:'Sydney'},
-  ];
-  const tzRow = document.getElementById('tzRow'), tzList = document.getElementById('tzList');
-  tzRow.innerHTML = tzs.map(t=>`<button class="tz-chip" data-id="${t.id}">${t.label}</button>`).join('');
-  function renderTimes(){
-    tzList.innerHTML = tzs.map(t=>{
-      const dt = t.id === 'local' ? new Date() : new Date(new Date().toLocaleString('en-US',{timeZone:t.id}));
-      const hh = dt.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      return `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.03)"><div><strong>${t.label}</strong><div class="muted" style="font-size:13px">${t.id}</div></div><div style="font-weight:700">${hh}</div></div>`;
-    }).join('');
-  }
-  renderTimes();
-  const interval = setInterval(renderTimes,1000);
-  // mark active tz on click
-  tzRow.querySelectorAll('.tz-chip').forEach(ch=>{
-    ch.addEventListener('click', ()=>{ tzRow.querySelectorAll('.tz-chip').forEach(c=>c.classList.remove('active')); ch.classList.add('active'); });
-  });
-}
+    <!-- World Clock -->
+    <section class="section" data-panel="worldclock" style="display:none">
+      <h3>World clock</h3>
+      <p class="muted">Add multiple timezones — times update every second.</p>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <select id="tzSelect" class="input" style="max-width:280px;">
+          <!-- simpler curated list -->
+          <option value="UTC">UTC</option>
+          <option value="Europe/London">London</option>
+          <option value="Europe/Paris">Paris</option>
+          <option value="Europe/Oslo">Oslo</option>
+          <option value="Asia/Kolkata">Kolkata</option>
+          <option value="Asia/Tokyo">Tokyo</option>
+          <option value="Australia/Sydney">Sydney</option>
+          <option value="America/New_York">New York</option>
+          <option value="America/Los_Angeles">Los Angeles</option>
+        </select>
+        <button class="btn primary" id="addTz">Add</button>
+      </div>
+      <div id="tzList" style="margin-top:14px;display:flex;flex-direction:column;gap:10px"></div>
+    </section>
 
-/* PASSWORD GENERATOR */
-function renderPassword(){
-  toolArea.innerHTML = `
-    <div class="card">
+    <!-- Password generator -->
+    <section class="section" data-panel="password" style="display:none">
       <h3>Password generator</h3>
-      <div class="muted">Strong random passwords — copy to clipboard.</div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input type="number" id="pwLen" value="16" min="6" max="64" style="width:110px">
+      <p class="muted">Generate secure passwords locally.</p>
+      <div class="row">
+        <input type="number" id="pwLen" class="input" style="max-width:120px" value="16" min="6" max="64">
         <button class="btn primary" id="genPw">Generate</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+        <input id="pwOut" class="input" readonly placeholder="Generated password appears here">
         <button class="btn" id="copyPw">Copy</button>
       </div>
-      <input type="text" id="pwOut" placeholder="Generated password appears here" style="margin-top:12px">
-    </div>`;
-  const out = document.getElementById('pwOut');
-  document.getElementById('genPw').onclick = ()=>{
-    const len = parseInt(document.getElementById('pwLen').value)||16;
-    out.value = gen(len);
-  };
-  document.getElementById('copyPw').onclick = ()=>{
-    if(!out.value){ toast('Generate first'); return;}
-    navigator.clipboard.writeText(out.value).then(()=>toast('Copied'));
-  };
-  function gen(n){
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
-    let s=''; for(let i=0;i<n;i++) s+=chars[Math.floor(Math.random()*chars.length)];
-    return s;
-  }
-}
+    </section>
 
-/* CLIPBOARD quick */
-function renderClipboard(){
-  toolArea.innerHTML = `
-    <div class="card">
-      <h3>Clipboard</h3>
-      <div class="muted">Paste & copy quickly.</div>
-      <textarea id="clipIn" rows="5" placeholder="Paste here..."></textarea>
-      <div class="btn-row">
-        <button class="btn primary" id="clipCopy">Copy</button>
-        <button class="btn" id="clipPaste">Paste</button>
-        <button class="btn" id="clipClear">Clear</button>
+    <!-- Clipboard (placeholder) -->
+    <section class="section" data-panel="clipboard" style="display:none">
+      <h3>Clipboard / Text Saver</h3>
+      <p class="muted">Quickly copy and paste text. (Uses the browser clipboard.)</p>
+      <textarea id="clipText" rows="4" class="input" placeholder="Paste or type text"></textarea>
+      <div class="row">
+        <button class="btn primary" id="clipCopy">Copy to clipboard</button>
+        <button class="btn" id="clipPaste">Paste from clipboard</button>
       </div>
-    </div>`;
-  const inEl = document.getElementById('clipIn');
-  document.getElementById('clipCopy').onclick = ()=>{ navigator.clipboard.writeText(inEl.value).then(()=>toast('Copied')); };
-  document.getElementById('clipPaste').onclick = ()=>{ navigator.clipboard.readText().then(t=>inEl.value=t).catch(()=>toast('Paste not allowed')); };
-  document.getElementById('clipClear').onclick = ()=>{ inEl.value=''; toast('Cleared'); };
-}
+    </section>
 
-/* FILE SIZE converter */
-function renderFileSize(){
-  toolArea.innerHTML = `
-    <div class="card">
-      <h3>File Size Converter</h3>
-      <div class="muted">Convert between bytes, KB, MB, GB.</div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <input type="number" id="fsVal" placeholder="value" style="width:120px">
-        <select id="fsFrom">
-          <option value="1">B</option>
-          <option value="1024">KB</option>
-          <option value="1048576">MB</option>
-          <option value="1073741824">GB</option>
-        </select>
-        <select id="fsTo">
-          <option value="1">B</option>
-          <option value="1024">KB</option>
-          <option value="1048576" selected>MB</option>
-          <option value="1073741824">GB</option>
-        </select>
+    <!-- File size (placeholder) -->
+    <section class="section" data-panel="filesize" style="display:none">
+      <h3>File size converter</h3>
+      <p class="muted">Convert KB ↔ MB ↔ GB (placeholder UI).</p>
+      <div class="row">
+        <input class="input" id="fsVal" placeholder="Enter bytes / KB / MB">
+        <button class="btn primary" id="fsConv">Convert</button>
       </div>
-      <div class="btn-row">
-        <button class="btn primary" id="fsCalc">Convert</button>
-        <div id="fsRes" style="align-self:center;color:var(--muted);margin-left:6px"></div>
-      </div>
-    </div>`;
-  document.getElementById('fsCalc').onclick = ()=>{
-    const v = Number(document.getElementById('fsVal').value) || 0;
-    const from = Number(document.getElementById('fsFrom').value);
-    const to = Number(document.getElementById('fsTo').value);
-    const res = (v*from)/to;
-    document.getElementById('fsRes').textContent = res % 1 === 0 ? res : res.toFixed(4);
-  };
-}
+      <div id="fsOut" style="margin-top:10px;color:var(--muted)"></div>
+    </section>
 
-/* CHAR & WORD COUNTER */
-function renderCharCount(){
-  toolArea.innerHTML = `
-    <div class="card">
+    <!-- Char/Word counter -->
+    <section class="section" data-panel="charword" style="display:none">
       <h3>Character & Word counter</h3>
-      <div class="muted">Paste text to count characters and words.</div>
-      <textarea id="cwText" rows="6" placeholder="Paste text here..."></textarea>
-      <div class="btn-row">
-        <button class="btn primary" id="cwCount">Count</button>
-        <button class="btn" id="cwClear">Clear</button>
-        <div id="cwRes" style="align-self:center;color:var(--muted);margin-left:6px"></div>
+      <p class="muted">Paste text and get counts instantly.</p>
+      <textarea id="cwText" rows="6" class="input" placeholder="Paste text here..."></textarea>
+      <div class="row">
+        <button class="btn primary" id="countBtn">Count</button>
+        <button class="btn" id="clearCW">Clear</button>
+        <div id="cwResult" style="margin-left:8px;align-self:center;color:var(--muted)"></div>
       </div>
-    </div>`;
-  document.getElementById('cwCount').onclick = ()=>{
-    const s = document.getElementById('cwText').value.trim();
-    const chars = s.length;
-    const words = s ? s.split(/\s+/).length : 0;
-    document.getElementById('cwRes').textContent = `${words} words • ${chars} chars`;
-  };
-  document.getElementById('cwClear').onclick = ()=>{ document.getElementById('cwText').value=''; document.getElementById('cwRes').textContent=''; };
-}
+    </section>
 
-/* CASE CONVERTER */
-function renderCaseConv(){
-  toolArea.innerHTML = `
-    <div class="card">
-      <h3>Case Converter</h3>
-      <div class="muted">Uppercase, lowercase, title case.</div>
-      <textarea id="caseText" rows="5" placeholder="Paste text here..."></textarea>
-      <div class="btn-row">
+    <!-- Case conversion -->
+    <section class="section" data-panel="caseconv" style="display:none">
+      <h3>Case converter</h3>
+      <p class="muted">Upper, lower, title case.</p>
+      <textarea id="caseText" rows="4" class="input" placeholder="Paste text"></textarea>
+      <div class="row">
         <button class="btn primary" id="toUpper">UPPER</button>
         <button class="btn" id="toLower">lower</button>
         <button class="btn" id="toTitle">Title Case</button>
-        <button class="btn" id="caseCopy">Copy</button>
       </div>
-    </div>`;
-  const t = document.getElementById('caseText');
-  document.getElementById('toUpper').onclick = ()=> t.value = t.value.toUpperCase();
-  document.getElementById('toLower').onclick = ()=> t.value = t.value.toLowerCase();
-  document.getElementById('toTitle').onclick = ()=> t.value = t.value.replace(/\w\S*/g, w => w.charAt(0).toUpperCase()+w.substr(1).toLowerCase());
-  document.getElementById('caseCopy').onclick = ()=> { navigator.clipboard.writeText(t.value).then(()=>toast('Copied')); };
-}
+    </section>
 
-/* TEXT FORMAT (JSON pretty/minify) */
-function renderTextFormat(){
-  toolArea.innerHTML = `
-  <div class="card">
-    <h3>Text Formatter / Indenter</h3>
-    <div class="muted">JSON pretty-print, JSON minify, basic HTML tidy.</div>
-    <textarea id="tfText" rows="8" placeholder='{ "hello": "world" }'></textarea>
-    <div class="btn-row">
-      <button class="btn primary" id="jsonPretty">JSON pretty</button>
-      <button class="btn" id="jsonMin">JSON minify</button>
-      <button class="btn" id="tfCopy">Copy</button>
-      <button class="btn" id="tfClear">Clear</button>
+    <!-- Text formatter (JSON pretty/minify) -->
+    <section class="section" data-panel="textformat" style="display:none">
+      <h3>Text Formatter / Indenter</h3>
+      <p class="muted">JSON pretty-print, JSON minify, basic HTML tidy.</p>
+      <textarea id="formatText" rows="8" class="input" placeholder='{ "hello": "world" }'></textarea>
+      <div class="row">
+        <button class="btn primary" id="jsonPretty">JSON pretty</button>
+        <button class="btn" id="jsonMin">JSON minify</button>
+        <button class="btn" id="copyFormat">Copy</button>
+        <button class="btn" id="clearFormat">Clear</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- feature boxes like calculator site -->
+  <div class="section feature-row">
+    <div class="feature">
+      <div class="ico">⚡</div>
+      <div>
+        <div style="font-weight:800">Lightning fast</div>
+        <div class="muted">Optimized code, minimal dependencies — instant on mobile & desktop.</div>
+      </div>
     </div>
-  </div>`;
-  const ta = document.getElementById('tfText');
-  document.getElementById('jsonPretty').onclick = ()=> {
-    try { ta.value = JSON.stringify(JSON.parse(ta.value), null, 2); } catch(e){ toast('Invalid JSON'); }
-  };
-  document.getElementById('jsonMin').onclick = ()=> {
-    try { ta.value = JSON.stringify(JSON.parse(ta.value)); } catch(e){ toast('Invalid JSON'); }
-  };
-  document.getElementById('tfCopy').onclick = ()=> navigator.clipboard.writeText(ta.value).then(()=>toast('Copied'));
-  document.getElementById('tfClear').onclick = ()=> ta.value='';
-}
 
-/* ---------- Small helpers ---------- */
-function toast(msg){
-  const el = document.createElement('div');
-  el.textContent = msg;
-  el.style.position='fixed'; el.style.bottom='28px'; el.style.left='50%'; el.style.transform='translateX(-50%)'; el.style.background='rgba(0,0,0,0.75)';
-  el.style.color='white'; el.style.padding='10px 16px'; el.style.borderRadius='10px'; el.style.zIndex=9999;
-  document.body.appendChild(el);
-  setTimeout(()=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); },1400);
-}
+    <div class="feature">
+      <div class="ico" style="background:linear-gradient(135deg,#4ee78a,#7a4bff)">🔒</div>
+      <div>
+        <div style="font-weight:800">Private by design</div>
+        <div class="muted">No personal data is stored — everything runs in your browser by default.</div>
+      </div>
+    </div>
 
-/* ---------- Start default tool ---------- */
-openTool('notes');
+    <div class="feature">
+      <div class="ico" style="background:linear-gradient(135deg,#ff9066,#ff6ec7)">🧰</div>
+      <div>
+        <div style="font-weight:800">All tools in one</div>
+        <div class="muted">Notes, stopwatch, converters, text tools — ready to use.</div>
+      </div>
+    </div>
+  </div>
 
-/* ---------- Accessibility / fit fixes ---------- */
-/* prevent tool buttons overflowing off-screen: adjust min-width on small devices */
-(function adjustButtons(){
-  const style = document.createElement('style');
-  style.innerHTML = `@media (max-width:420px){ .tool-btn{min-width:82px;padding:8px 12px;font-size:14px;} }`;
-  document.head.appendChild(style);
-})();
+  <!-- footer -->
+  <div class="footer">
+    <a class="cta" href="https://pirateruler.com" target="_blank" rel="noopener">Visit PirateRuler.com</a>
+    <p class="muted" style="margin-top:12px">Utility Tools by PirateRuler.com — lightweight, private web utilities you can run anywhere. No signups, no tracking.</p>
+  </div>
 
+</div>
+
+<!-- sidebar content (hidden panel) -->
+<div id="sidebar" class="sidebar" role="dialog" aria-hidden="true">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+    <div class="logo" style="width:48px;height:48px;font-size:18px">PR</div>
+    <div>
+      <div style="font-weight:800">Utility Tools</div>
+      <div class="muted" style="font-size:13px">by PirateRuler.com — Private · Fast</div>
+    </div>
+  </div>
+
+  <div style="margin-top:6px;font-weight:700">PirateRuler Links</div>
+  <div class="muted" style="font-size:13px;margin-bottom:10px">Quick links & backup resources</div>
+
+  <a href="https://pirateruler.com" target="_blank" rel="noopener">Open PirateRuler.com</a>
+  <a href="#">About — PirateRuler</a>
+  <a href="#">Privacy Policy</a>
+  <a href="#">Contact</a>
+  <a href="#">Terms & Service</a>
+
+  <div style="margin-top:12px;color:var(--muted)">If this site is offline you can visit PirateRuler for backups & resources: pirateruler.com</div>
+  <div style="display:flex;justify-content:flex-end;margin-top:12px">
+    <button class="btn" id="closeSidebar">Close</button>
+  </div>
+</div>
+
+<script>
+  // theme
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeLabel = document.getElementById('themeLabel');
+  const themeDot = document.getElementById('themeDot');
+  const saved = localStorage.getItem('pr-theme') || 'light';
+  body.setAttribute('data-theme', saved);
+  themeLabel.textContent = saved === 'dark' ? 'Dark' : 'Light';
+
+  function toggleTheme(){
+    const cur = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    body.setAttribute('data-theme', cur);
+    localStorage.setItem('pr-theme', cur);
+    themeLabel.textContent = cur === 'dark' ? 'Dark' : 'Light';
+  }
+  themeToggle.addEventListener('click', toggleTheme);
+
+  // sidebar open/close
+  const openSidebar = document.getElementById('openSidebar');
+  const sidebar = document.getElementById('sidebar');
+  const closeSidebar = document.getElementById('closeSidebar');
+  openSidebar.addEventListener('click', ()=>{ sidebar.classList.add('open'); sidebar.setAttribute('aria-hidden','false'); });
+  closeSidebar.addEventListener('click', ()=>{ sidebar.classList.remove('open'); sidebar.setAttribute('aria-hidden','true'); });
+
+  // tool switching
+  const toolBtns = document.querySelectorAll('.tool-btn');
+  const panels = document.querySelectorAll('[data-panel]');
+  toolBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      toolBtns.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const which = btn.getAttribute('data-tool');
+      panels.forEach(p=>{
+        p.style.display = p.getAttribute('data-panel') === which ? '' : 'none';
+      });
+      // scroll to the top of the panels
+      document.getElementById('panels').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // Notes save
+  const notesArea = document.getElementById('notesArea');
+  notesArea.value = localStorage.getItem('pr-notes') || '';
+  document.getElementById('saveNotes').addEventListener('click', ()=> {
+    localStorage.setItem('pr-notes', notesArea.value);
+    alert('Notes saved locally.');
+  });
+  document.getElementById('clearNotes').addEventListener('click', ()=> { notesArea.value=''; localStorage.removeItem('pr-notes'); });
+
+  // Stopwatch
+  let swRunning=false, swStart=0, swElapsed=0, swTimer;
+  const swDisplay = document.getElementById('swDisplay');
+  document.getElementById('swStart').addEventListener('click', ()=>{
+    if(!swRunning){ swRunning=true; swStart=Date.now()-swElapsed; swTimer=setInterval(updateSW,30); }
+  });
+  document.getElementById('swStop').addEventListener('click', ()=>{ swRunning=false; clearInterval(swTimer); swElapsed=Date.now()-swStart; updateSW(); });
+  document.getElementById('swReset').addEventListener('click', ()=>{ swRunning=false; clearInterval(swTimer); swElapsed=0; swStart=0; swDisplay.textContent='00:00.00'; });
+
+  function updateSW(){
+    const t = Date.now() - swStart;
+    const ms = Math.floor(t % 1000 / 10);
+    const s = Math.floor((t/1000) % 60);
+    const m = Math.floor(t/60000);
+    swDisplay.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(ms).padStart(2,'0');
+  }
+
+  // Date diff
+  document.getElementById('calcDiff').addEventListener('click', ()=>{
+    const a=document.getElementById('dateA').value, b=document.getElementById('dateB').value;
+    if(!a||!b){ document.getElementById('diffResult').textContent='Select two dates'; return; }
+    const da=new Date(a), db=new Date(b);
+    const diff = Math.abs(db - da);
+    const days = Math.floor(diff / (1000*60*60*24));
+    document.getElementById('diffResult').textContent = days + ' day(s)';
+  });
+
+  // World clock: add timezone boxes
+  const tzList = document.getElementById('tzList');
+  const tzSelect = document.getElementById('tzSelect');
+  const zones = [];
+
+  document.getElementById('addTz').addEventListener('click', ()=>{
+    const tz = tzSelect.value;
+    if(zones.includes(tz)) return;
+    zones.push(tz);
+    const el = document.createElement('div');
+    el.style.display='flex';el.style.justifyContent='space-between';el.style.alignItems='center';
+    el.style.padding='10px';el.style.borderRadius='10px';el.style.background='rgba(0,0,0,0.03)';
+    el.innerHTML = `<div style="font-weight:700">${tz.replace('_',' ')}</div><div id="time-${tz}">--:--:--</div>`;
+    tzList.appendChild(el);
+    updateClocks();
+  });
+
+  function updateClocks(){
+    zones.forEach(tz=>{
+      try{
+        const timeStr = new Intl.DateTimeFormat('en-GB',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
+        const node = document.getElementById('time-'+tz);
+        if(node) node.textContent = timeStr;
+      }catch(e){}
+    });
+  }
+  setInterval(updateClocks,1000);
+
+  // Password generator
+  function genPassword(len){
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
+    let out='';
+    for(let i=0;i<len;i++) out += charset.charAt(Math.floor(Math.random()*charset.length));
+    return out;
+  }
+  document.getElementById('genPw').addEventListener('click', ()=>{
+    const len = Math.max(6, Math.min(64, parseInt(document.getElementById('pwLen').value || 16)));
+    const p = genPassword(len);
+    document.getElementById('pwOut').value = p;
+  });
+  document.getElementById('copyPw').addEventListener('click', async ()=>{
+    const v = document.getElementById('pwOut').value;
+    if(!v) return alert('Generate first');
+    await navigator.clipboard.writeText(v);
+    alert('Copied to clipboard');
+  });
+
+  // Clipboard actions
+  document.getElementById('clipCopy').addEventListener('click', async ()=>{
+    await navigator.clipboard.writeText(document.getElementById('clipText').value || '');
+    alert('Copied');
+  });
+  document.getElementById('clipPaste').addEventListener('click', async ()=>{
+    try{
+      const t = await navigator.clipboard.readText();
+      document.getElementById('clipText').value = t;
+    }catch(e){ alert('Clipboard not available'); }
+  });
+
+  // File size convert (basic parse)
+  document.getElementById('fsConv').addEventListener('click', ()=>{
+    const v = document.getElementById('fsVal').value.trim();
+    if(!v){ document.getElementById('fsOut').textContent='Enter value like 1KB or 1024'; return; }
+    let out='';
+    try{
+      if(/[a-zA-Z]/.test(v)){
+        // parse like 2MB, 512KB
+        const m = v.match(/^([\d.]+)\s*(b|kb|mb|gb)?$/i);
+        if(!m){ document.getElementById('fsOut').textContent='Invalid'; return; }
+        let val=parseFloat(m[1]), unit=(m[2]||'b').toLowerCase();
+        if(unit==='b'){ out = (val/1024).toFixed(2) + ' KB'; }
+        else if(unit==='kb'){ out = (val/1024).toFixed(2) + ' MB'; }
+        else if(unit==='mb'){ out = (val/1024).toFixed(2) + ' GB'; }
+        else out='OK';
+      }else{
+        const bytes = parseFloat(v);
+        out = `${(bytes/1024).toFixed(2)} KB — ${(bytes/1024/1024).toFixed(2)} MB`;
+      }
+    }catch(e){ out='—'; }
+    document.getElementById('fsOut').textContent = out;
+  });
+
+  // Char/Word counter
+  document.getElementById('countBtn').addEventListener('click', ()=>{
+    const t = document.getElementById('cwText').value || '';
+    const chars = t.length;
+    const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+    document.getElementById('cwResult').textContent = `${chars} char • ${words} word(s)`;
+  });
+  document.getElementById('clearCW').addEventListener('click', ()=>{ document.getElementById('cwText').value=''; document.getElementById('cwResult').textContent=''; });
+
+  // Case conv
+  document.getElementById('toUpper').addEventListener('click', ()=>{ const el=document.getElementById('caseText'); el.value = el.value.toUpperCase(); });
+  document.getElementById('toLower').addEventListener('click', ()=>{ const el=document.getElementById('caseText'); el.value = el.value.toLowerCase(); });
+  document.getElementById('toTitle').addEventListener('click', ()=>{ const el=document.getElementById('caseText'); el.value = el.value.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()); });
+
+  // Text formatter: JSON pretty/minify + copy/clear
+  document.getElementById('jsonPretty').addEventListener('click', ()=>{
+    const v = document.getElementById('formatText').value;
+    try{
+      const obj = JSON.parse(v);
+      document.getElementById('formatText').value = JSON.stringify(obj, null, 2);
+    }catch(e){
+      alert('Invalid JSON');
+    }
+  });
+  document.getElementById('jsonMin').addEventListener('click', ()=>{
+    const v = document.getElementById('formatText').value;
+    try{
+      const obj = JSON.parse(v);
+      document.getElementById('formatText').value = JSON.stringify(obj);
+    }catch(e){
+      alert('Invalid JSON');
+    }
+  });
+  document.getElementById('copyFormat').addEventListener('click', async ()=>{
+    await navigator.clipboard.writeText(document.getElementById('formatText').value || '');
+    alert('Copied');
+  });
+  document.getElementById('clearFormat').addEventListener('click', ()=>{ document.getElementById('formatText').value=''; });
+
+  // init: ensure "Utility Tools by PirateRuler.com" fits on two lines
+  (function tidyByline(){
+    // the byline is already "by PirateRuler.com" on one line in markup.
+    // If browser wraps, we keep it short; design ensures it stays two lines with header size.
+  })();
+
+  // ensure proper tool visibility on load: show notes panel
+  document.querySelector('[data-panel="notes"]').style.display='';
+
+  // small resize handler to ensure toolbar buttons don't overflow (they wrap naturally).
+  window.addEventListener('resize', ()=>{/* styling handled by CSS */});
 </script>
 </body>
 </html>
