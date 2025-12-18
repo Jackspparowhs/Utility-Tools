@@ -1,694 +1,458 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Utility Tools — PirateRuler.com</title>
-  <meta name="description" content="Utility Tools by PirateRuler.com — notes, stopwatch, date diff, world clock, password, converters and text helpers. Private & fast." />
-  <meta name="theme-color" content="#f7fbff" />
-  <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect rx="14" width="64" height="64" fill="%236b7dff"/><text x="50%" y="50%" font-family="Inter,Arial,sans-serif" font-weight="800" font-size="26" text-anchor="middle" alignment-baseline="central" fill="white">PR</text></svg>'>
-  <style>
-    /* styles adapted to match the calculator aesthetic (ocean default) */
-    :root{
-      --bg:#f3f7fb; --card:#ffffff; --muted:#6b7480; --text:#0b2130;
-      --accent-start:#6b7dff; --accent-end:#0bb3ff;
-      --glass: rgba(11,17,28,0.04);
-      --radius:14px;
-      --shadow-lg: 0 18px 50px rgba(3,12,30,0.18), inset 0 1px 0 rgba(255,255,255,0.6);
-      --shadow-sm: 0 8px 24px rgba(3,12,30,0.08);
-    }
-    html.dark { --bg:#071225; --card:#061028; --muted:#98a7bf; --text:#e9f1ff; --glass: rgba(255,255,255,0.02); --shadow-lg: 0 18px 50px rgba(0,0,0,0.6); --shadow-sm: 0 8px 24px rgba(0,0,0,0.45); --accent-start:#5ab3ff; --accent-end:#6b7dff; }
-    html.ocean { --bg:#e8f7fb; --card:#ffffff; --muted:#4f6b75; --text:#063242; --glass: rgba(6,50,66,0.03); --accent-start:#00c2d1; --accent-end:#2b9fff; --shadow-lg: 0 18px 50px rgba(3,12,30,0.08); }
-    html.sunset { --bg:#fff6f8; --card:#fff; --muted:#7a6b77; --text:#2a1020; --glass: rgba(42,16,32,0.03); --accent-start:#ff7aa2; --accent-end:#ffb86b; --shadow-lg: 0 18px 50px rgba(50,10,20,0.06); }
-
-    *{box-sizing:border-box}
-    body{background:linear-gradient(180deg,var(--bg), #e9f6ff); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; color:var(--text); margin:0; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1280px;margin:14px auto;padding:18px;}
-
-    /* header */
-    header.header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px; border-radius:14px; background:linear-gradient(90deg, rgba(107,125,255,0.06), rgba(11,179,255,0.02)); box-shadow:var(--shadow-sm); }
-    .brand {display:flex; align-items:center; gap:12px;}
-    .logo { width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800; background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:white; font-size:20px; box-shadow:0 10px 30px rgba(11,123,255,0.12); flex-shrink:0; }
-    .brand-title {line-height:1}
-    .brand-title .title-strong {font-size:22px;font-weight:900;margin:0}
-    .brand-title .by {font-size:12px;color:var(--muted); margin-top:3px}
-    .header-actions {display:flex; gap:10px; align-items:center;}
-    .btn {padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
-    .btn.ghost {background:transparent;border:1px solid rgba(0,0,0,0.06); color:var(--text);}
-    .btn.theme {background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white}
-    .hamb { width:46px;height:46px;border-radius:10px;background:var(--glass);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(0,0,0,0.04) }
-
-    .theme-select { position:relative; }
-    .theme-list { position:absolute; right:0; top:48px; background:var(--card); border-radius:10px; box-shadow:var(--shadow-sm); padding:8px; display:none; min-width:140px; z-index:1000; }
-    .theme-list.open { display:block; }
-    .theme-item { padding:8px 10px; cursor:pointer; border-radius:8px; font-weight:700; color:var(--muted) }
-    .theme-item:hover{ background:linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.03)); color:var(--text) }
-
-    /* sidebar */
-    .sidebar {
-      position:fixed; top:0; right:0; height:100vh; width:360px; max-width:94vw; transform:translateX(120%); transition:transform .28s cubic-bezier(.2,.9,.3,1); z-index:90;
-      background:var(--card); box-shadow: -40px 0 80px rgba(2,8,20,0.25);
-      padding:20px; border-left:1px solid rgba(0,0,0,0.04); overflow:auto; border-radius:0 0 0 14px;
-    }
-    .sidebar.open { transform:translateX(0); }
-    .sidebar .close { display:flex; justify-content:flex-end }
-    .sidebar h3{margin:0 0 6px 0;font-size:16px}
-    .nav-list{margin-top:10px; display:flex; flex-direction:column; gap:12px}
-    .nav-list a{display:block;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.01), rgba(0,0,0,0.02)); color:var(--text); font-weight:600}
-    .backup{margin-top:18px;color:var(--muted);font-size:13px}
-
-    /* hero */
-    .hero { margin-top:18px; padding:28px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96)); box-shadow:var(--shadow-lg); }
-    html.dark .hero { background:linear-gradient(180deg, rgba(1,6,12,0.6), rgba(2,8,16,0.6)); }
-    @media(min-width:1100px){
-      .hero{ padding:36px 48px; }
-      .hero .big { font-size:42px; }
-      .brand-title .title-strong { font-size:24px; }
-    }
-    .hero .big {font-size:34px;font-weight:900;margin:0;text-align:center}
-    .hero .small {text-align:center;color:var(--muted);margin-top:8px; max-width:960px;margin-left:auto;margin-right:auto}
-    .pills {display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px}
-    .pill {padding:10px 16px;border-radius:999px;background:transparent;border:1px solid rgba(11,17,28,0.06); cursor:pointer; color:var(--muted); font-weight:700}
-    .pill.active { background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; box-shadow:0 10px 30px rgba(11,107,255,0.12); transform:translateY(-4px); }
-
-    /* grid */
-    .grid { display:grid; grid-template-columns: 2fr 1fr; gap:18px; margin-top:18px; align-items:start; }
-    @media (max-width:980px){ .grid{ grid-template-columns: 1fr } }
-    .card { background:var(--card); border-radius:14px; padding:18px; box-shadow:var(--shadow-sm); border:1px solid rgba(0,0,0,0.04); animation:cardIn .42s both}
-    @keyframes cardIn { from { transform:translateY(8px); opacity:0 } to { transform:none; opacity:1 } }
-    .card h2{margin:0 0 8px 0;font-size:18px}
-    .hint{color:var(--muted); font-size:13px; margin-bottom:10px}
-
-    input[type="text"], input[type="number"], input[type="date"], select, textarea {
-      width:100%; padding:12px;border-radius:10px;border:1px solid rgba(10,20,40,0.06); font-size:15px; background:transparent; color:var(--text)
-    }
-    .row {display:flex; gap:10px}
-    .primary { background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; padding:9px 14px; border-radius:10px; border:none; font-weight:800; cursor:pointer }
-    .ghost { background:transparent; border:1px solid rgba(0,0,0,0.06); padding:9px 12px;border-radius:10px; cursor:pointer }
-
-    .result { margin-top:12px; font-weight:800; color:#0b8a66 }
-    html.dark .result { color:#57f0b6 }
-
-    .key-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:9px; margin-top:12px; }
-    .key { padding:14px; border-radius:12px; background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01)); border:1px solid rgba(0,0,0,0.04); font-weight:700; cursor:pointer; text-align:center }
-    .key.op { background:transparent; color:var(--muted) }
-    .key.eq { background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); color:white; box-shadow:0 10px 30px rgba(11,107,255,0.12) }
-
-    /* feature panel (right) - sticky and scrollable */
-    aside { align-self:start; position:relative; }
-    .feature-panel{
-      background:var(--card); border:1px solid rgba(0,0,0,0.06); border-radius:14px; box-shadow:var(--shadow-sm); padding:12px;
-    }
-    @media(min-width:981px){
-      .feature-panel{ position:sticky; top:18px; max-height:calc(100vh - 36px); overflow:auto; }
-    }
-    .panel-title{font-weight:900; margin:6px 6px 12px 6px;}
-    .features{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media(max-width:700px){ .features{ grid-template-columns:1fr; } }
-
-    /* exactly six equal boxes */
-    .feature{
-      display:flex; gap:14px; align-items:center; padding:16px;
-      border-radius:12px; background:var(--card);
-      border:1px solid rgba(0,0,0,0.06); box-shadow:var(--shadow-sm);
-      min-height:110px;  /* uniform height */
-    }
-    .f-icon{ width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center; font-weight:800; color:#fff; background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); flex-shrink:0; }
-    .f-title{font-weight:800}
-    .f-desc{color:var(--muted); font-size:13px}
-
-    /* subtle custom scrollbar */
-    .feature-panel::-webkit-scrollbar{width:10px}
-    .feature-panel::-webkit-scrollbar-track{background:transparent}
-    .feature-panel::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--accent-start),var(--accent-end)); border-radius:999px;}
-    .feature-panel{scrollbar-color: var(--accent-end) transparent; scrollbar-width:thin;}
-
-    footer { margin-top:16px; padding:16px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.96)); text-align:center; box-shadow:var(--shadow-lg) }
-    .visit { padding:12px 20px; border-radius:999px; display:inline-block; background:linear-gradient(90deg,#ff7aa2 0%, #6b7dff 100%); color:white; font-weight:800; text-decoration:none }
-
-    .muted{color:var(--muted)} .spacer{height:8px}
-
-    /* small layout tightening on wide screens */
-    @media(min-width:1000px){
-      main.grid{ margin-top:10px; gap:18px; }
-      .card { padding:18px; }
-      .hero { margin-bottom:6px; }
-    }
-
-    /* ensure inputs look okay in dark */
-    html.dark input, html.dark textarea, html.dark select { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); color: var(--text); }
-  </style>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" /><head>
+    <meta charset="UTF-8">
+    <title>Pirate Ruler - Index of All Our Sites</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="color-scheme" content="dark">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Pirate Ruler">
+    <meta name="apple-mobile-web-app-title" content="Pirate Ruler">
+    <meta property="og:title" content="Pirate Ruler - Index of All Our Sites">
+    <meta property="og:image" content="img/card.jpg">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#121212">
+    <link rel="icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+    <link rel="manifest" href="static/manifest.json">
+    <link rel="preload" href="static/fonts/roboto.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="static/fonts/materialdesignicons.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" type="text/css" href="static/fonts/fontload.css">
+    <link rel="stylesheet" type="text/css" href="static/style.min.css">
+    <script type="text/javascript" src="static/index.min.js" defer></script>
+    <meta name="description" content="Official Pirate Ruler Network.">
 </head>
-<body>
-  <div class="container">
 
-    <!-- Header -->
-    <header class="header" role="banner" aria-label="Site header">
-      <div class="brand">
-        <a href="/" aria-label="Home" style="display:flex; align-items:center; gap:12px">
-          <div class="logo" aria-hidden="true">PR</div>
-          <div class="brand-title">
-            <div class="title-strong">Tools</div>
-            <div class="by">by PirateRuler.com</div>
-          </div>
-        </a>
-      </div>
-
-      <div class="header-actions" role="navigation" aria-label="Header controls">
-        <!-- theme dropdown -->
-        <div class="theme-select" id="themeSelectWrap">
-          <button id="themeBtn" class="btn theme" title="Theme">Ocean</button>
-          <div id="themeList" class="theme-list" aria-hidden="true">
-            <div class="theme-item" data-theme="light">Light</div>
-            <div class="theme-item" data-theme="dark">Dark</div>
-            <div class="theme-item" data-theme="ocean">Ocean</div>
-            <div class="theme-item" data-theme="sunset">Sunset</div>
-          </div>
+<body style="background-color:#121212; overscroll-behavior-y: none;">
+    <div id="header">
+        <div id="mainmenubtn" onclick="openMainMenu()"><i class="mdil mdil-menu"></i></div>
+        <div id="main-logo"><a href="index.html"><img src="static/android-icon-48x48.png" alt="logo"> Pirate Ruler</a></div>
+        <div id="headsearchbtn" onclick="eID('opensearchbtn').click()"><i class="mdil mdil-magnify"></i></div>
+        <div id="editmenubtn" onclick="openEditMenu()"><i class="mdil mdil-pencil"></i></div>
+    </div>
+    <div id="header-replace"></div>
+    <div id="base-content">
+        <div id="content-search">
+            <div id="search-bar">
+                <input id="search-input" type="search" spellcheck="false" autocomplete="off" placeholder="Search (F)"><div id="search-btn"><i class="mdil mdil-magnify"></i></div>
+                <select id="section-input" autocomplete="off">
+                    <option value="any" selected>Any</option><option value="tool">Streaming</option>                </select>
+            </div>
+            <div id="search-result"></div>
         </div>
-        <div class="hamb" id="hambBtn" title="Open menu" aria-haspopup="true" aria-controls="sidebar">☰</div>
-      </div>
-    </header>
-
-    <!-- HERO -->
-    <section class="hero" aria-labelledby="heroTitle">
-      <h1 id="heroTitle" class="big">All-in-one Utility Tools</h1>
-      <p class="small">Everyday quick tools people love — zero APIs, instant execution. Notes, stopwatch, date difference, world clock, password generator, converters and text helpers — private and lightweight.</p>
-
-      <div class="pills" role="tablist" aria-label="Tool tabs">
-        <button class="pill active" data-target="notes">Notes</button>
-        <button class="pill" data-target="stopwatch">Stopwatch</button>
-        <button class="pill" data-target="datediff">Date Diff</button>
-        <button class="pill" data-target="worldclock">World Clock</button>
-        <button class="pill" data-target="password">Password</button>
-        <button class="pill" data-target="clipboard">Clipboard</button>
-        <button class="pill" data-target="filesize">File Size</button>
-        <button class="pill" data-target="charword">Char/Word</button>
-        <button class="pill" data-target="caseconv">Case Conv</button>
-        <button class="pill" data-target="textformat">Text Format</button>
-      </div>
-    </section>
-
-    <!-- MAIN GRID -->
-    <main class="grid" role="main">
-
-      <!-- LEFT COLUMN: Tools -->
-      <div>
-
-        <!-- Notes (simple textarea) -->
-        <section id="notes" class="card" aria-labelledby="notesTitle">
-          <h2 id="notesTitle">Notes</h2>
-          <div class="hint">Quick private notes — saved to localStorage (only in your browser).</div>
-          <textarea id="notesArea" rows="6" placeholder="Write notes..."></textarea>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button class="primary" id="saveNotes">Save</button>
-            <button class="ghost" id="clearNotes">Clear</button>
-            <button class="ghost" id="exportNotes">Export</button>
-          </div>
-          <div id="notesMsg" class="muted" style="margin-top:10px"></div>
-        </section>
-
-        <!-- Stopwatch -->
-        <section id="stopwatch" class="card" hidden aria-labelledby="swTitle">
-          <h2 id="swTitle">Stopwatch</h2>
-          <div class="hint">Start, stop and reset. Lap support included.</div>
-          <div style="font-size:28px;font-weight:800" id="swDisplay">00:00:00.00</div>
-          <div style="height:10px"></div>
-          <div style="display:flex;gap:8px">
-            <button class="primary" id="swStart">Start</button>
-            <button class="ghost" id="swStop">Stop</button>
-            <button class="ghost" id="swLap">Lap</button>
-            <button class="ghost" id="swReset">Reset</button>
-          </div>
-          <div style="margin-top:12px"><strong class="muted">Laps</strong><div id="swLaps" class="muted" style="margin-top:8px"></div></div>
-        </section>
-
-        <!-- Date Diff -->
-        <section id="datediff" class="card" hidden aria-labelledby="ddTitle">
-          <h2 id="ddTitle">Date difference finder</h2>
-          <div class="hint">Calculate days between two dates.</div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <input type="date" id="date1" />
-            <input type="date" id="date2" />
-          </div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button class="primary" id="calcDate">Calculate</button>
-            <button class="ghost" id="clearDate">Clear</button>
-          </div>
-          <div id="dateOut" class="result" aria-live="polite"></div>
-        </section>
-
-        <!-- World Clock -->
-        <section id="worldclock" class="card" hidden aria-labelledby="wcTitle">
-          <h2 id="wcTitle">World Clock</h2>
-          <div class="hint">Select time zones to view local time (client-side).</div>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-            <select id="tzSelect" style="min-width:180px;">
-              <option value="UTC">UTC</option>
-              <option value="Europe/London">Europe/London</option>
-              <option value="Europe/Paris">Europe/Paris</option>
-              <option value="Europe/Berlin">Europe/Berlin</option>
-              <option value="Europe/Moscow">Europe/Moscow</option>
-              <option value="Africa/Johannesburg">Africa/Johannesburg</option>
-              <option value="Asia/Dubai">Asia/Dubai</option>
-              <option value="Asia/Kolkata">Asia/Kolkata</option>
-              <option value="Asia/Shanghai">Asia/Shanghai</option>
-              <option value="Asia/Tokyo">Asia/Tokyo</option>
-              <option value="Australia/Sydney">Australia/Sydney</option>
-              <option value="Pacific/Auckland">Pacific/Auckland</option>
-              <option value="America/New_York">America/New_York</option>
-              <option value="America/Chicago">America/Chicago</option>
-              <option value="America/Denver">America/Denver</option>
-              <option value="America/Los_Angeles">America/Los_Angeles</option>
-              <option value="America/Sao_Paulo">America/Sao_Paulo</option>
-              <option value="Africa/Cairo">Africa/Cairo</option>
-              <option value="Asia/Jerusalem">Asia/Jerusalem</option>
-            </select>
-            <button class="primary" id="addTz">Add</button>
-          </div>
-          <div style="margin-top:12px">
-            <div id="tzList" style="display:flex;flex-direction:column;gap:10px"></div>
-          </div>
-        </section>
-
-        <!-- Password (simple generator) -->
-        <section id="password" class="card" hidden aria-labelledby="pwTitle">
-          <h2 id="pwTitle">Password generator</h2>
-          <div class="hint">Generate strong passwords (client-side only).</div>
-          <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
-            <input id="pwLen" type="number" min="4" max="64" value="16" style="width:110px" />
-            <label><input id="pwUpper" type="checkbox" checked /> A-Z</label>
-            <label><input id="pwLower" type="checkbox" checked /> a-z</label>
-            <label><input id="pwNum" type="checkbox" checked /> 0-9</label>
-            <label><input id="pwSym" type="checkbox" checked /> symbol</label>
-          </div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button class="primary" id="genPw">Generate</button>
-            <button class="ghost" id="copyPw">Copy</button>
-          </div>
-          <div style="margin-top:10px"><input id="pwOut" type="text" readonly /></div>
-        </section>
-
-        <!-- Clipboard -->
-        <section id="clipboard" class="card" hidden aria-labelledby="cbTitle">
-          <h2 id="cbTitle">Clipboard helpers</h2>
-          <div class="hint">Quick copy/paste to browser clipboard.</div>
-          <textarea id="cbInput" rows="4" placeholder="Type or paste text..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="primary" id="copyBtn">Copy to clipboard</button>
-            <button class="ghost" id="pasteBtn">Paste from clipboard</button>
-            <button class="ghost" id="clearCb">Clear</button>
-          </div>
-          <div id="cbMsg" class="muted" style="margin-top:8px"></div>
-        </section>
-
-        <!-- File Size converter -->
-        <section id="filesize" class="card" hidden aria-labelledby="fsTitle">
-          <h2 id="fsTitle">File Size converter</h2>
-          <div class="hint">Convert bytes ↔ KB ↔ MB ↔ GB.</div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <input id="fsInput" type="number" placeholder="Bytes" />
-            <select id="fsUnit">
-              <option value="bytes">Bytes</option>
-              <option value="kb">KB</option>
-              <option value="mb">MB</option>
-              <option value="gb">GB</option>
-            </select>
-          </div>
-          <div style="margin-top:10px;display:flex;gap:8px">
-            <button class="primary" id="convFs">Convert</button>
-            <button class="ghost" id="clearFs">Clear</button>
-          </div>
-          <div id="fsOut" class="muted" style="margin-top:10px"></div>
-        </section>
-
-        <!-- Char & Word counter -->
-        <section id="charword" class="card" hidden aria-labelledby="cwTitle">
-          <h2 id="cwTitle">Character & Word counter</h2>
-          <div class="hint">Paste text to count characters and words.</div>
-          <textarea id="cwInput" rows="6" placeholder="Paste text here..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="primary" id="countBtn">Count</button>
-            <button class="ghost" id="clearCW">Clear</button>
-            <button class="ghost" id="copyCW">Copy</button>
-          </div>
-          <div id="cwResult" class="muted" style="margin-top:8px"></div>
-        </section>
-
-        <!-- Case Converter -->
-        <section id="caseconv" class="card" hidden aria-labelledby="ccTitle">
-          <h2 id="ccTitle">Case Converter</h2>
-          <div class="hint">Uppercase, lowercase, Title Case.</div>
-          <textarea id="ccInput" rows="4" placeholder="Type or paste..."></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="primary" id="upperBtn">UPPERCASE</button>
-            <button class="ghost" id="lowerBtn">lowercase</button>
-            <button class="ghost" id="titleBtn">Title Case</button>
-            <button class="ghost" id="copyCase">Copy</button>
-          </div>
-        </section>
-
-        <!-- Text Formatter -->
-        <section id="textformat" class="card" hidden aria-labelledby="tfTitle">
-          <h2 id="tfTitle">Text Formatter / Indenter</h2>
-          <div class="hint">JSON pretty-print, JSON minify, or basic tidy.</div>
-          <textarea id="tfInput" rows="6" placeholder='{"hello":"world"}'></textarea>
-          <div style="margin-top:8px;display:flex;gap:8px">
-            <button class="primary" id="prettyBtn">JSON pretty</button>
-            <button class="ghost" id="minifyBtn">JSON minify</button>
-            <button class="ghost" id="copyTF">Copy</button>
-            <button class="ghost" id="clearTF">Clear</button>
-          </div>
-          <div id="tfMsg" class="muted" style="margin-top:8px"></div>
-        </section>
-
-      </div>
-
-      <!-- RIGHT COLUMN: feature panel (six equal boxes) -->
-      <aside>
-        <div class="feature-panel" role="complementary" aria-label="Features">
-          <div class="panel-title">Why PirateRuler tools?</div>
-
-          <div class="features" aria-hidden="false">
-            <div class="feature">
-              <div class="f-icon">⚡</div>
-              <div>
-                <div class="f-title">Lightning fast</div>
-                <div class="f-desc">Optimized code, minimal dependencies — instant results on mobile & desktop.</div>
-              </div>
-            </div>
-
-            <div class="feature">
-              <div class="f-icon" style="background:linear-gradient(135deg,#8ee36b,#2bbf6f)">🔒</div>
-              <div>
-                <div class="f-title">Private by design</div>
-                <div class="f-desc">No personal data is stored — everything runs in your browser.</div>
-              </div>
-            </div>
-
-            <div class="feature">
-              <div class="f-icon" style="background:linear-gradient(135deg,#ffb86b,#ff6b7a)">🧰</div>
-              <div>
-                <div class="f-title">All tools in one</div>
-                <div class="f-desc">Notes, stopwatch, converters, text tools — ready to use.</div>
-              </div>
-            </div>
-
-            <div class="feature">
-              <div class="f-icon" style="background:linear-gradient(135deg,#c471ed,#7bffdd)">🌐</div>
-              <div>
-                <div class="f-title">Backup resources</div>
-                <div class="f-desc">If this site is offline, visit PirateRuler.com for backups & resources.</div>
-              </div>
-            </div>
-
-            <div class="feature">
-              <div class="f-icon" style="background:linear-gradient(135deg,#7bd6ff,#6b7dff)">📱</div>
-              <div>
-                <div class="f-title">Mobile-first</div>
-                <div class="f-desc">Looks great on phones and adapts cleanly to desktops.</div>
-              </div>
-            </div>
-
-            <div class="feature">
-              <div class="f-icon" style="background:linear-gradient(135deg,#ff7aa2,#6b7dff)">🔧</div>
-              <div>
-                <div class="f-title">Developer friendly</div>
-                <div class="f-desc">Lightweight, forkable, and transparent — easy to customize.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="spacer"></div>
-
-          <!-- small about card inside panel so layout stays compact -->
-          <div class="feature" style="min-height:unset; align-items:flex-start; padding:14px">
-            <div class="f-icon" style="background:linear-gradient(135deg,var(--accent-start),var(--accent-end))">PR</div>
-            <div>
-              <div class="f-title">Utility Tools</div>
-              <div class="f-desc" style="margin-top:6px">
-                <a href="https://www.pirateruler.com/post/about.html" target="_blank" rel="noopener noreferrer">About</a> ·
-                <a href="https://www.pirateruler.com/post/privacy.html" target="_blank" rel="noopener noreferrer">Privacy</a> ·
-                <a href="https://www.pirateruler.com/post/contact.html" target="_blank" rel="noopener noreferrer">Contact</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-      <a class="visit" href="https://pirateruler.com" target="_blank" rel="noopener noreferrer">Visit PirateRuler.com</a>
-      <div style="height:12px"></div>
-      <small class="muted">© <span id="year"></span> Utility Tools by PirateRuler.com — Backup & resources: pirateruler.com</small>
-    </footer>
+        <div id="content-multi">
+            <div id="sec-topcontainer" class="multi-container">
+                <div class="section topinfo">
+                    <div class="midbreak">
+  <p style="color:rgba(220,220,220,0.9);text-align:center;padding:10px 15px;margin:0;line-height:1.4;">
+    Pirate Ruler - Index of Our Sites
+  </p>
+  <div id="lastedit" style="text-align:center;margin-top:8px;">
   </div>
+</div>
+                </div>
+                <div id="filterbox"><div id="filterbox-left"><span onclick="execshare()"><img src="icons/share.png" alt=""> Share</span></div><span id="tBlurEl" onclick="toggleBlur()"><i class="mdil mdil-eye-off"></i> God</span></div>
+                
+                <div id="jump-menu"><div style="background-color:#20281e;" class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-play'></i><br>Anime</div><div style="background-color:#372626;" class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-alert-octagon'></i><br>Restricted</div><div style="background-color:#2f2920;" class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-view-dashboard'></i><br>Manga</div><div style="background-color:#2a2739;" class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-format-align-left'></i><br>Novel</div><div style="background-color:#20332d;" class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-camcorder'></i><br>Drama</div><div style="background-color:#1e2b31;" class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-monitor'></i><br>Games</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-layers'></i><br>Apps</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-download'></i><br>Download</div><div style="background-color:#332633;" class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-music'></i><br>Music</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-clock'></i><br>Schedule</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-folder-multiple'></i><br>Database</div><div style="background-color:#22280b;" class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-play'></i><br>Western</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-console'></i><br>Tools</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-trophy'></i><br>Quiz</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-chart-line'></i><br>Trends</div><div class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-help-circle'></i><br>Guides</div><div class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-image'></i><br>Imageboards</div><div class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-heart'></i><br>VTuber</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-currency-usd'></i><br>Gacha</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-camera'></i><br>Cosplay</div><div class="jump-box" onclick="scrollToEl('sec-stream')"><i class='mdil mdil-presentation-play'></i><br>AMV</div><div class="jump-box" onclick="scrollToEl('sec-tool')"><i class='mdil mdil-forum'></i><br>Forums</div><div class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-play'></i><br>Donghua</div><div class="jump-box" onclick="scrollToEl('sec-read')"><i class='mdil mdil-view-dashboard'></i><br>Manhwa</div><div class="jump-division">Pages</div><a class="jump-box2" href="index.html"><i class="mdil mdil-home"></i><br>Main Index</a>
+<a class="jump-box2" href="graveyard.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="margin-bottom:-2px;width: 20px;height: 25px;"><path fill="currentColor" d="M10 2h4c3.31 0 5 2.69 5 6v10.66C16.88 17.63 15.07 17 12 17s-4.88.63-7 1.66V8c0-3.31 1.69-6 5-6M8 8v1.5h8V8zm1 4v1.5h6V12zM3 22v-.69c2.66-1.69 10.23-5.47 18-.06V22z"></path></svg><br>Graveyard</a>
+<a class="jump-box2" href="post/contact.html"><i class="mdil mdil-email"></i><br>Contact</a>
+<a class="jump-box2" href="https://t.me/RulerPirate"><i class="mdil mdil-label"></i><br>Telegram</a></div>
+                <div id="jump-expand" onclick="expandJumpMenu()"><i class="mdil mdil-blank"></i></div>
+                
+                <div id="sec-bookmark" style="display:none" class="section">
+                    <div class="section-title" onclick="editModeB()">
+                        <i class="mdil mdil-star"></i> Bookmark
+                        <div class="toprighticon"><i class="mdil mdil-pencil"></i></div>
+                    </div>
+                    <div class="section-list">
+                    </div>
+                </div>
 
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="close"><button class="ghost" id="closeSidebar">Close</button></div>
-    <h3>PirateRuler Links</h3>
-    <p class="muted">Quick links & backup resources</p>
-    <nav class="nav-list" aria-label="PirateRuler quick links">
-      <a href="https://www.pirateruler.com/post/about.html" target="_blank" rel="noopener noreferrer">About — PirateRuler</a>
-      <a href="https://www.pirateruler.com/post/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-      <a href="https://www.pirateruler.com/post/contact.html" target="_blank" rel="noopener noreferrer">Contact</a>
-      <a href="https://www.pirateruler.com/post/terms.html" target="_blank" rel="noopener noreferrer">Terms & Service</a>
-    </nav>
-    <div class="backup">If this site is offline you can visit PirateRuler for backups & resources:<br><a href="https://pirateruler.com" target="_blank" rel="noopener noreferrer">pirateruler.com</a></div>
-  </aside>
+                <div style="border:1px solid #20281e;"  id="sec-stream" class="section"><div class="section-title" style="background-color:#20281e;" ><span onclick="standAlone('sec-stream')"><i class='mdil mdil-play'></i> Entertainment Logbook <div class="sec-count">(76)</div></span><div class="pin-button" onclick="standAlone('sec-stream')"><i class="mdil mdil-pin mdil-rotate-45"></i></div></div><div class="section-list"><div class="section-filter"><div class="filter-menu"></div><span class="filter-icon"></span> <select autocomplete="off" class="filter-input" onchange="filterSection('stream', this.value)"><option value="any" selected>Any</option><option value="Self-host">Streaming</option><option value="Scraper">Reading</option></select></div><div data-rank="1" data-filter="Streaming" class="section-item">1. <a href="s/blog.html" data-link="https://blog.pirateruler.com/home"><img src="../static.everythingmoe.com/icons/blog.png" alt=""> Blog - Captain's Log & Dev Journal</a> <div class="morebtn clickable" onclick="expandinfo(this, 'blog')"><i class="mdil mdil-chevron-down"></i></div></div><div data-rank="2" data-filter="Easy download, Self-host, Old reliable, Simple interface, Hard-sub" class="section-item">2. <a href="s/atlas.html" data-link="https://atlas.pirateruler.com/"><img src="../static.everythingmoe.com/icons/atlas.png" alt=""> Atlas - Maps & Data Explorer</a> <div class="morebtn clickable" onclick="expandinfo(this, 'animepahe')"><i class="mdil mdil-chevron-down"></i></div></div></div></div><div  id="sec-read" class="section"><div class="section-title" ><span onclick="standAlone('sec-read')"><i class='mdil mdil-play'></i> The Dockyard <div class="sec-count">(21)</div></span><div class="pin-button" onclick="standAlone('sec-read')"><i class="mdil mdil-pin mdil-rotate-45"></i></div></div><div class="section-list"><div data-rank="1" data-filter="Donghua only" class="section-item">1. <a href="s/stock.html" data-link="https://stock.pirateruler.com/"><img src="../static.everythingmoe.com/icons/stock.png" alt=""> Stock - Free Images and Videos</a>  <span class="addtag">God</span><div class="morebtn clickable" onclick="expandinfo(this, 'stock')"><i class="mdil mdil-chevron-down"></i></div></div><div data-rank="2" data-filter="Donghua only, Disqus" class="section-item">2. <a href="s/wether.html" data-link="https://wether.pirateruler.com/"><img src="../static.everythingmoe.com/icons/wether.png" alt=""> Wether - Live Forecasts & Climate</a>  <span class="addtag">God</span><div class="morebtn clickable" onclick="expandinfo(this, 'wether')"><i class="mdil mdil-chevron-down"></i></div></div></div></div>
+                
+<div style="border:1px solid #2f2920;" id="sec-tool" class="section">
+    <div class="section-title" style="background-color:#2f2920; position: sticky; top: 0; z-index: 100;">
+        <span onclick="standAlone('sec-tool')">
+            <i class='mdil mdil-view-dashboard'></i> Tools & Other Sites Section 
+            <div class="sec-count">(79)</div>
+        </span> 
+        <div class="pin-button" onclick="standAlone('sec-tool')">
+            <i class="mdil mdil-pin mdil-rotate-45"></i>
+        </div>
+    </div>
 
-<script>
-  // footer year
-  document.getElementById('year').textContent = new Date().getFullYear();
+    <div class="section-list" style="overflow-anchor: none;">
 
-  // THEME: multi-theme with Ocean default (persist)
-  const root = document.documentElement;
-  const themeBtn = document.getElementById('themeBtn');
-  const themeList = document.getElementById('themeList');
-  const themeSelectWrap = document.getElementById('themeSelectWrap');
+        <div data-rank="1" data-filter="Media, Images, Videos" class="section-item">
+            1. <a href="https://stock.pirateruler.com/" target="_blank"> Stock – Free Images and Videos</a> 
+        </div>
 
-  function applyTheme(t){
-    ['dark','ocean','sunset'].forEach(c=> root.classList.remove(c));
-    if(t === 'dark'){ root.classList.add('dark'); localStorage.setItem('site-theme','dark'); themeBtn.textContent = 'Dark' }
-    else if(t === 'ocean'){ root.classList.add('ocean'); localStorage.setItem('site-theme','ocean'); themeBtn.textContent = 'Ocean' }
-    else if(t === 'sunset'){ root.classList.add('sunset'); localStorage.setItem('site-theme','sunset'); themeBtn.textContent = 'Sunset' }
-    else { localStorage.setItem('site-theme','light'); themeBtn.textContent = 'Light' }
-  }
-  const saved = localStorage.getItem('site-theme');
-  if(saved) applyTheme(saved); else applyTheme('ocean');
+        <div data-rank="2" data-filter="Design, Wallpapers, Backgrounds" class="section-item">
+            2. <a href="https://wallpapers.pirateruler.com/" target="_blank"> Wallpapers – Desktop & Mobile Backgrounds</a> 
+        </div>
 
-  themeBtn.addEventListener('click', e => {
-    themeList.classList.toggle('open');
-    themeList.setAttribute('aria-hidden', String(!themeList.classList.contains('open')));
-  });
-  themeList.addEventListener('click', e => {
-    const t = e.target.closest('.theme-item');
-    if(!t) return;
-    applyTheme(t.dataset.theme);
-    themeList.classList.remove('open');
-    themeList.setAttribute('aria-hidden','true');
-  });
-  document.addEventListener('click', e => {
-    if(!themeSelectWrap.contains(e.target)) { themeList.classList.remove('open'); themeList.setAttribute('aria-hidden','true'); }
-  });
+        <div data-rank="3" data-filter="Tech, AI, Hub" class="section-item">
+            3. <a href="https://ai.pirateruler.com/" target="_blank"> AI – Artificial Intelligence Hub</a> 
+        </div>
 
-  // SIDEBAR open/close
-  const sidebar = document.getElementById('sidebar');
-  const hambBtn = document.getElementById('hambBtn');
-  const closeSidebar = document.getElementById('closeSidebar');
-  function openSidebar(){ sidebar.classList.add('open'); sidebar.setAttribute('aria-hidden','false'); closeSidebar.focus(); }
-  function closeSB(){ sidebar.classList.remove('open'); sidebar.setAttribute('aria-hidden','true'); }
-  hambBtn.addEventListener('click', openSidebar);
-  closeSidebar.addEventListener('click', closeSB);
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSB(); });
+        <div data-rank="4" data-filter="Tech, AI, Image" class="section-item">
+            4. <a href="https://aipic.pirateruler.com/" target="_blank"> AI Pic – AI Art & Image Generator</a> 
+        </div>
 
-  function updateSidebarWidth(){ if(window.innerWidth < 420) sidebar.style.width = '94vw'; else sidebar.style.width = '360px'; }
-  window.addEventListener('resize', updateSidebarWidth);
-  updateSidebarWidth();
+        <div data-rank="5" data-filter="Anime, Info, Database" class="section-item">
+            5. <a href="https://anime.pirateruler.com/" target="_blank"> Anime – Info, News & Database</a> 
+        </div>
 
-  // PILL TABS behaviour
-  const pills = Array.from(document.querySelectorAll('.pill'));
-  function showTool(id){
-    document.querySelectorAll('main section.card').forEach(s => s.hidden = true);
-    const el = document.getElementById(id);
-    if(el) el.hidden = false;
-    pills.forEach(p => p.classList.toggle('active', p.dataset.target === id));
-    setTimeout(()=> {
-      if(el){ const rect = el.getBoundingClientRect(); window.scrollTo({top: window.scrollY + rect.top - 80, behavior:'smooth'}); }
-    }, 70);
-  }
-  pills.forEach(p => p.addEventListener('click', ()=> showTool(p.dataset.target)));
-  showTool('notes'); // default
+        <div id="more-sites" style="display: none;">
 
-  /* ------------ NOTES ------------- */
-  const notesArea = document.getElementById('notesArea');
-  const saveNotes = document.getElementById('saveNotes');
-  const clearNotes = document.getElementById('clearNotes');
-  const exportNotes = document.getElementById('exportNotes');
-  const notesMsg = document.getElementById('notesMsg');
-  const NOTES_KEY = 'utilitytools-notes-v1';
-  notesArea.value = localStorage.getItem(NOTES_KEY) || '';
-  saveNotes.addEventListener('click', ()=> {
-    localStorage.setItem(NOTES_KEY, notesArea.value);
-    notesMsg.textContent = 'Saved locally in your browser';
-    setTimeout(()=> notesMsg.textContent='', 2200);
-  });
-  clearNotes.addEventListener('click', ()=> { notesArea.value=''; localStorage.removeItem(NOTES_KEY); notesMsg.textContent='Cleared'; setTimeout(()=> notesMsg.textContent='',1500); });
-  exportNotes.addEventListener('click', ()=> {
-    const blob = new Blob([notesArea.value || ''], {type:'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download='notes.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  });
+            <div data-rank="6" data-filter="Anime, NSFW, Adult" class="section-item">
+                6. <a href="https://animensfw.pirateruler.xyz/" target="_blank"> AnimeNSFW – Adult Anime Content</a> 
+            </div>
 
-  /* ------------ STOPWATCH ------------- */
-  let swTimer=null, swStartAt=0, swElapsed=0; const swDisplay = document.getElementById('swDisplay');
-  const swStartBtn = document.getElementById('swStart'), swStopBtn = document.getElementById('swStop'), swLapBtn = document.getElementById('swLap'), swResetBtn = document.getElementById('swReset');
-  const swLaps = document.getElementById('swLaps'); let laps=[];
-  function formatSw(ms){
-    const milli = Math.floor((ms%1000)/10).toString().padStart(2,'0');
-    const s = Math.floor(ms/1000)%60; const m = Math.floor(ms/60000)%60; const h = Math.floor(ms/3600000);
-    return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${milli}`;
-  }
-  swStartBtn.addEventListener('click', ()=>{
-    if(swTimer) return;
-    swStartAt = Date.now() - swElapsed;
-    swTimer = setInterval(()=>{ swElapsed = Date.now() - swStartAt; swDisplay.textContent = formatSw(swElapsed); }, 30);
-  });
-  swStopBtn.addEventListener('click', ()=> { if(!swTimer) return; clearInterval(swTimer); swTimer=null; });
-  swResetBtn.addEventListener('click', ()=> { clearInterval(swTimer); swTimer=null; swElapsed=0; swDisplay.textContent='00:00:00.00'; laps=[]; swLaps.innerHTML=''; });
-  swLapBtn.addEventListener('click', ()=> { if(!swTimer && swElapsed===0) return; laps.unshift(formatSw(swElapsed)); swLaps.innerHTML = laps.map(l=>`<div>${l}</div>`).join(''); });
+            <div data-rank="7" data-filter="Anime, Waifu, Images" class="section-item">
+                7. <a href="https://animewaifu.pirateruler.com/" target="_blank"> AnimeWaifu – Waifu Database & Images</a> 
+            </div>
 
-  /* ------------ DATE DIFF ------------- */
-  const date1 = document.getElementById('date1'), date2 = document.getElementById('date2'), calcDate = document.getElementById('calcDate'), clearDate = document.getElementById('clearDate'), dateOut = document.getElementById('dateOut');
-  calcDate.addEventListener('click', ()=>{
-    if(!date1.value || !date2.value){ dateOut.textContent = 'Choose both dates'; return; }
-    const a=new Date(date1.value), b=new Date(date2.value); if(isNaN(a)||isNaN(b)){ dateOut.textContent='Invalid date(s)'; return; }
-    const ms = Math.abs(b-a); const days = Math.floor(ms/(1000*60*60*24));
-    dateOut.textContent = days===0? 'Same day': days + ' day' + (days>1?'s':'');
-  });
-  clearDate.addEventListener('click', ()=> { date1.value=''; date2.value=''; dateOut.textContent=''; });
+            <div data-rank="8" data-filter="Media, Movies, TV" class="section-item">
+                8. <a href="https://imdb.pirateruler.com/" target="_blank"> IMDb – Movie & TV Database</a> 
+            </div>
 
-  /* ------------ WORLD CLOCK ------------- */
-  const tzSelect = document.getElementById('tzSelect'), addTz = document.getElementById('addTz'), tzList = document.getElementById('tzList');
-  function updateTzDisplay(){
-    const now = new Date();
-    tzList.querySelectorAll('.tz-item').forEach(node=>{
-      const zone = node.dataset.zone;
-      try{
-        const opts = {timeZone: zone, hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'};
-        node.querySelector('.tz-time').textContent = new Intl.DateTimeFormat([], opts).format(now);
-      }catch(e){
-        node.querySelector('.tz-time').textContent = '--:--:--';
-      }
-    });
-  }
-  addTz.addEventListener('click', ()=>{
-    const zone = tzSelect.value;
-    if(!zone) return;
-    if(Array.from(tzList.children).some(c=>c.dataset.zone === zone)) return;
-    const el = document.createElement('div'); el.className='tz-item'; el.dataset.zone=zone;
-    el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center'; el.style.padding='10px'; el.style.borderRadius='10px'; el.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.01), rgba(0,0,0,0.02))';
-    el.innerHTML = `<div style="font-weight:800">${zone.replace('_',' ')}</div><div style="text-align:right"><div class="tz-time">--:--:--</div><button style="margin-top:6px" class="ghost removeTz">Remove</button></div>`;
-    tzList.prepend(el);
-    el.querySelector('.removeTz').addEventListener('click', ()=> el.remove());
-    updateTzDisplay();
-  });
-  setInterval(updateTzDisplay,1000);
+            <div data-rank="9" data-filter="Portal, Main, Hub" class="section-item">
+                9. <a href="https://pirateruler.xyz/" target="_blank"> PirateRuler.xyz – Main Portal Site</a> 
+            </div>
 
-  /* ------------ PASSWORD GENERATOR ------------- */
-  const genPw = document.getElementById('genPw'), copyPw = document.getElementById('copyPw'), pwOut = document.getElementById('pwOut');
-  genPw.addEventListener('click', ()=>{
-    const len = parseInt(document.getElementById('pwLen').value) || 16;
-    const upper = document.getElementById('pwUpper').checked;
-    const lower = document.getElementById('pwLower').checked;
-    const num = document.getElementById('pwNum').checked;
-    const sym = document.getElementById('pwSym').checked;
-    let chars = '';
-    if(upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if(lower) chars += 'abcdefghijklmnopqrstuvwxyz';
-    if(num) chars += '0123456789';
-    if(sym) chars += '!@#$%^&*()-_=+[]{};:,.<>?';
-    if(!chars){ pwOut.value = ''; alert('Enable at least one charset'); return; }
-    let out = ''; const rnd = crypto && crypto.getRandomValues ? crypto.getRandomValues.bind(crypto) : null;
-    if(rnd){
-      const data = new Uint32Array(len);
-      crypto.getRandomValues(data);
-      for(let i=0;i<len;i++) out += chars[data[i] % chars.length];
-    } else {
-      for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
-    }
-    pwOut.value = out;
-  });
-  copyPw.addEventListener('click', ()=> { if(!pwOut.value) return; navigator.clipboard.writeText(pwOut.value).then(()=> alert('Copied')) });
+            <div data-rank="10" data-filter="Games, Database, List" class="section-item">
+                10. <a href="https://gamelist.pirateruler.com/" target="_blank"> GameList – Video Game Database</a> 
+            </div>
 
-  /* ------------ CLIPBOARD ------------- */
-  const copyBtn = document.getElementById('copyBtn'), pasteBtn = document.getElementById('pasteBtn'), cbInput = document.getElementById('cbInput'), clearCb = document.getElementById('clearCb'), cbMsg = document.getElementById('cbMsg');
-  copyBtn.addEventListener('click', ()=> navigator.clipboard.writeText(cbInput.value || '').then(()=> { cbMsg.textContent='Copied'; setTimeout(()=> cbMsg.textContent='',1200); }).catch(()=> cbMsg.textContent='Failed' ));
-  pasteBtn.addEventListener('click', async ()=> { try{ const t = await navigator.clipboard.readText(); cbInput.value = t; cbMsg.textContent='Pasted'; setTimeout(()=> cbMsg.textContent='',1200); }catch(e){ cbMsg.textContent='Paste failed'; } });
-  clearCb.addEventListener('click', ()=> { cbInput.value=''; cbMsg.textContent=''; });
+            <div data-rank="11" data-filter="Tools, Identity, Profile" class="section-item">
+                11. <a href="https://id.pirateruler.com/" target="_blank"> ID – Identity & Profile Tools</a> 
+            </div>
 
-  /* ------------ FILE SIZE ------------- */
-  const convFs = document.getElementById('convFs'), clearFs = document.getElementById('clearFs'), fsInput = document.getElementById('fsInput'), fsUnit = document.getElementById('fsUnit'), fsOut = document.getElementById('fsOut');
-  convFs.addEventListener('click', ()=> {
-    const v = parseFloat(fsInput.value);
-    const u = fsUnit.value;
-    if(isNaN(v)){ fsOut.textContent='Enter a number'; return; }
-    let bytes = v;
-    if(u === 'kb') bytes = v * 1024;
-    if(u === 'mb') bytes = v * 1024 * 1024;
-    if(u === 'gb') bytes = v * 1024 * 1024 * 1024;
-    fsOut.textContent = `Bytes: ${bytes} • KB: ${(bytes/1024).toFixed(3)} • MB: ${(bytes/(1024*1024)).toFixed(3)}`;
-  });
-  clearFs.addEventListener('click', ()=> { fsInput.value=''; fsOut.textContent=''; });
+            <div data-rank="12" data-filter="Reading, Books, Literature" class="section-item">
+                12. <a href="https://book.pirateruler.com/" target="_blank"> Book – Literature & Reading Resources</a> 
+            </div>
 
-  /* ------------ CHAR & WORD ------------- */
-  const cwInput = document.getElementById('cwInput'), countBtn = document.getElementById('countBtn'), clearCW = document.getElementById('clearCW'), cwResult = document.getElementById('cwResult'), copyCW = document.getElementById('copyCW');
-  countBtn.addEventListener('click', ()=> {
-    const t = cwInput.value || '';
-    const chars = t.length;
-    const words = t.trim().length ? t.trim().split(/\s+/).length : 0;
-    cwResult.textContent = `${words} words • ${chars} characters`;
-  });
-  clearCW.addEventListener('click', ()=> { cwInput.value=''; cwResult.textContent=''; });
-  copyCW.addEventListener('click', ()=> navigator.clipboard.writeText(cwInput.value || '').then(()=> alert('Copied')));
+            <div data-rank="13" data-filter="Food, Cooking, Recipes" class="section-item">
+                13. <a href="https://recipe.pirateruler.com/" target="_blank"> Recipe – Cooking & Culinary Guides</a> 
+            </div>
 
-  /* ------------ CASE CONVERTER ------------- */
-  const ccInput = document.getElementById('ccInput'), upperBtn = document.getElementById('upperBtn'), lowerBtn = document.getElementById('lowerBtn'), titleBtn = document.getElementById('titleBtn'), copyCase = document.getElementById('copyCase');
-  upperBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toUpperCase());
-  lowerBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase());
-  titleBtn.addEventListener('click', ()=> ccInput.value = ccInput.value.toLowerCase().replace(/\b\w/g, s => s.toUpperCase()));
-  copyCase.addEventListener('click', ()=> navigator.clipboard.writeText(ccInput.value || '').then(()=> alert('Copied')));
+            <div data-rank="14" data-filter="Tools, Postal, Shipping" class="section-item">
+                14. <a href="https://postal.pirateruler.com/" target="_blank"> Postal – Zip Codes & Shipping Info</a> 
+            </div>
 
-  /* ------------ TEXT FORMAT ------------- */
-  const tfInput = document.getElementById('tfInput'), prettyBtn = document.getElementById('prettyBtn'), minifyBtn = document.getElementById('minifyBtn'), copyTF = document.getElementById('copyTF'), clearTF = document.getElementById('clearTF'), tfMsg = document.getElementById('tfMsg');
-  prettyBtn.addEventListener('click', ()=>{
-    try{ const v = JSON.parse(tfInput.value); tfInput.value = JSON.stringify(v,null,2); tfMsg.textContent='Formatted'; setTimeout(()=>tfMsg.textContent='',1400); }catch(e){ tfMsg.textContent='Invalid JSON'; setTimeout(()=>tfMsg.textContent='',1800); }
-  });
-  minifyBtn.addEventListener('click', ()=>{
-    try{ const v = JSON.parse(tfInput.value); tfInput.value = JSON.stringify(v); tfMsg.textContent='Minified'; setTimeout(()=>tfMsg.textContent='',1400); }catch(e){ tfMsg.textContent='Invalid JSON'; setTimeout(()=>tfMsg.textContent='',1800); }
-  });
-  copyTF.addEventListener('click', ()=> navigator.clipboard.writeText(tfInput.value || '').then(()=> { tfMsg.textContent='Copied'; setTimeout(()=>tfMsg.textContent='',1200); }));
-  clearTF.addEventListener('click', ()=> { tfInput.value=''; tfMsg.textContent=''; });
+            <div data-rank="15" data-filter="Fun, Humor, Jokes" class="section-item">
+                15. <a href="https://joke.pirateruler.com/" target="_blank"> Joke – Humor & Fun Collection</a> 
+            </div>
 
-  /* close sidebar on outside click */
-  document.addEventListener('click', function(e){
-    if(!sidebar.classList.contains('open')) return;
-    const inside = sidebar.contains(e.target) || hambBtn.contains(e.target);
-    if(!inside) closeSB();
-  });
+            <div data-rank="16" data-filter="Dev, Code, Git" class="section-item">
+                16. <a href="https://github.pirateruler.com/" target="_blank"> GitHub – Code Repositories & Dev Tools</a> 
+            </div>
 
-  /* keyboard helpers (hotkeys) */
-  document.addEventListener('keydown', (e)=>{
-    const active = document.activeElement;
-    if(active && (active.tagName==='INPUT' || active.tagName==='TEXTAREA' || active.tagName==='SELECT')) return;
-    if(e.key.toLowerCase() === 'n') showTool('notes');
-    if(e.key.toLowerCase() === 's') showTool('stopwatch');
-    if(e.key.toLowerCase() === 'd') showTool('datediff');
-    if(e.key.toLowerCase() === 'w') showTool('worldclock');
-    if(e.key.toLowerCase() === 't') showTool('textformat');
-  });
-</script>
+            <div data-rank="17" data-filter="Info, Encyclopedia, Wiki" class="section-item">
+                17. <a href="https://wikipedia.pirateruler.com/" target="_blank"> Wikipedia – The Free Encyclopedia</a> 
+            </div>
+
+            <div data-rank="18" data-filter="Info, World, Nations" class="section-item">
+                18. <a href="https://country.pirateruler.com/" target="_blank"> Country – World Nations Information</a> 
+            </div>
+
+            <div data-rank="19" data-filter="Games, Pokémon, Database" class="section-item">
+                19. <a href="https://pokemon.pirateruler.com/" target="_blank"> Pokémon – Pokédex & Game Info</a> 
+            </div>
+
+            <div data-rank="20" data-filter="Science, Space, Astronomy" class="section-item">
+                20. <a href="https://space.pirateruler.com/" target="_blank"> Space – Astronomy & Cosmos Explorer</a> 
+            </div>
+
+            <div data-rank="21" data-filter="Fun, Quiz, Trivia" class="section-item">
+                21. <a href="https://quiz.pirateruler.com/" target="_blank"> Quiz – Trivia & Knowledge Tests</a> 
+            </div>
+
+            <div data-rank="22" data-filter="Design, Logo, Graphics" class="section-item">
+                22. <a href="https://logo.pirateruler.com/" target="_blank"> Logo – Design Resources & Inspiration</a> 
+            </div>
+
+            <div data-rank="23" data-filter="Tools, Image, Enhancer" class="section-item">
+                23. <a href="https://enhancer.pirateruler.com/" target="_blank"> Enhancer – Image Quality Improver</a> 
+            </div>
+
+            <div data-rank="24" data-filter="Web, SEO, Analysis" class="section-item">
+                24. <a href="https://siteinfo.pirateruler.com/" target="_blank"> SiteInfo – Website Analyzer & SEO</a> 
+            </div>
+
+            <div data-rank="25" data-filter="Web, Domain, Whois" class="section-item">
+                25. <a href="https://domain.pirateruler.com/" target="_blank"> Domain – Whois & Lookup Tools</a> 
+            </div>
+
+            <div data-rank="26" data-filter="Fun, Meme, Generator" class="section-item">
+                26. <a href="https://meme.pirateruler.com/" target="_blank"> Meme – Generator & Collection</a> 
+            </div>
+
+            <div data-rank="27" data-filter="Audio, Voice, TTS" class="section-item">
+                27. <a href="https://voice.pirateruler.com/" target="_blank"> Voice – Text-to-Speech & Audio Tools</a> 
+            </div>
+
+            <div data-rank="28" data-filter="Tools, URL, Shortener" class="section-item">
+                28. <a href="https://url.pirateruler.com/" target="_blank"> URL – Link Shortener & Tools</a> 
+            </div>
+
+            <div data-rank="29" data-filter="Info, Facts, Knowledge" class="section-item">
+                29. <a href="https://facts.pirateruler.com/" target="_blank"> Facts – Random & Interesting Knowledge</a> 
+            </div>
+
+            <div data-rank="30" data-filter="Info, Time, Sun" class="section-item">
+                30. <a href="https://sunrise.pirateruler.com/" target="_blank"> Sunrise – Sunset & Daylight Times</a> 
+            </div>
+
+            <div data-rank="31" data-filter="Info, Weather, Forecast" class="section-item">
+                31. <a href="https://weather.pirateruler.com/" target="_blank"> Weather – Forecasts & Climate Info</a> 
+            </div>
+
+            <div data-rank="32" data-filter="Tools, Internet, Speed" class="section-item">
+                32. <a href="https://internet.pirateruler.com/" target="_blank"> Internet – Speed Test & Connectivity</a> 
+            </div>
+
+            <div data-rank="33" data-filter="Info, Science, Earth" class="section-item">
+                33. <a href="https://earthquakes.pirateruler.com/" target="_blank"> Earthquakes – Seismic Activity Tracker</a> 
+            </div>
+
+            <div data-rank="34" data-filter="Tools, File, Converter" class="section-item">
+                34. <a href="https://converter.pirateruler.com/" target="_blank"> Converter – File Format Conversion</a> 
+            </div>
+
+            <div data-rank="35" data-filter="Web, SEO, Keyword" class="section-item">
+                35. <a href="https://keyword.pirateruler.com/" target="_blank"> Keyword – Search & SEO Tools</a> 
+            </div>
+
+            <div data-rank="36" data-filter="Tools, Location, Address" class="section-item">
+                36. <a href="https://address.pirateruler.com/" target="_blank"> Address – Location Lookup & Validation</a> 
+            </div>
+
+            <div data-rank="37" data-filter="Web, Apps, Store" class="section-item">
+                37. <a href="https://appstore.pirateruler.com/" target="_blank"> App Store – Application Search & Info</a> 
+            </div>
+
+            <div data-rank="38" data-filter="Tools, File, Compressor" class="section-item">
+                38. <a href="https://compressor.pirateruler.com/" target="_blank"> Compressor – File Size Reducer</a> 
+            </div>
+
+            <div data-rank="39" data-filter="Anime, Hentai, Adult" class="section-item">
+                39. <a href="https://hentailist.pirateruler.com/" target="_blank"> HentaiList – Adult Hentai Database</a> 
+            </div>
+
+            <div data-rank="40" data-filter="Web, History, Archive" class="section-item">
+                40. <a href="https://archive.pirateruler.com/" target="_blank"> Archive – Wayback Machine & Web History</a> 
+            </div>
+
+            <div data-rank="41" data-filter="Tools, Security, VPN" class="section-item">
+                41. <a href="https://vpn.pirateruler.com/" target="_blank"> VPN – Privacy & Security Tools</a> 
+            </div>
+
+            <div data-rank="42" data-filter="Tools, Email, Temp" class="section-item">
+                42. <a href="https://mail.pirateruler.com/" target="_blank"> Mail – Temporary & Disposable Email</a> 
+            </div>
+
+            <div data-rank="43" data-filter="Web, Dev, Builder" class="section-item">
+                43. <a href="https://website.pirateruler.com/" target="_blank"> Website – Builder & Development Resources</a> 
+            </div>
+
+            <div data-rank="44" data-filter="Tools, Tracker, Activity" class="section-item">
+                44. <a href="https://activity.pirateruler.com/" target="_blank"> Activity – Tracker & Planner</a> 
+            </div>
+
+            <div data-rank="45" data-filter="Language, Rhyme, Dictionary" class="section-item">
+                45. <a href="https://rhyme.pirateruler.com/" target="_blank"> Rhyme – Dictionary & Lyric Tools</a> 
+            </div>
+
+            <div data-rank="46" data-filter="Info, Creatures, Mythology" class="section-item">
+                46. <a href="https://bestiary.pirateruler.com/" target="_blank"> Bestiary – Mythical Creatures & Beasts</a> 
+            </div>
+
+            <div data-rank="47" data-filter="Info, Names, Generator" class="section-item">
+                47. <a href="https://name.pirateruler.com/" target="_blank"> Name – Meanings & Generators</a> 
+            </div>
+
+            <div data-rank="48" data-filter="Tools, PDF, Editor" class="section-item">
+                48. <a href="https://pdf.pirateruler.com/" target="_blank"> PDF – Tools, Editors & Converters</a> 
+            </div>
+
+            <div data-rank="49" data-filter="Games, Online, Browser" class="section-item">
+                49. <a href="https://games.pirateruler.com/" target="_blank"> Games – Play Online Browser Games</a> 
+            </div>
+
+            <div data-rank="50" data-filter="Tools, Utility, General" class="section-item">
+                50. <a href="https://tool.pirateruler.com/" target="_blank"> Tool – General Utility Collection</a> 
+            </div>
+
+            <div data-rank="51" data-filter="Design, Backgrounds, Wallpapers" class="section-item">
+                51. <a href="https://bg.pirateruler.com/" target="_blank"> BG – Backgrounds & Textures</a> 
+            </div>
+
+            <div data-rank="52" data-filter="Info, Quotes, Sayings" class="section-item">
+                52. <a href="https://quotes.pirateruler.com/" target="_blank"> Quotes – Famous Sayings & Proverbs</a> 
+            </div>
+
+            <div data-rank="53" data-filter="Design, Font, Typography" class="section-item">
+                53. <a href="https://font.pirateruler.com/" target="_blank"> Font – Typography & Downloadable Fonts</a> 
+            </div>
+
+            <div data-rank="54" data-filter="Design, Art, Draw" class="section-item">
+                54. <a href="https://draw.pirateruler.com/" target="_blank"> Draw – Sketchpad & Art Tools</a> 
+            </div>
+
+            <div data-rank="55" data-filter="Language, Japanese, Learn" class="section-item">
+                55. <a href="https://learnjap.pirateruler.com/" target="_blank"> LearnJap – Japanese Language Resources</a> 
+            </div>
+
+            <div data-rank="56" data-filter="Social, Hashtag, Generator" class="section-item">
+                56. <a href="https://hashtag.pirateruler.com/" target="_blank"> Hashtag – Generator for Social Media</a> 
+            </div>
+
+            <div data-rank="57" data-filter="Tools, Business, Invoice" class="section-item">
+                57. <a href="https://invoice.pirateruler.com/" target="_blank"> Invoice – Generator & Template Tools</a> 
+            </div>
+
+            <div data-rank="58" data-filter="Design, Color, Picker" class="section-item">
+                58. <a href="https://color.pirateruler.com/" target="_blank"> Color – Picker, Palettes & Schemes</a> 
+            </div>
+
+            <div data-rank="59" data-filter="Info, Time, Clock" class="section-item">
+                59. <a href="https://time.pirateruler.com/" target="_blank"> Time – World Clock & Time Zones</a> 
+            </div>
+
+            <div data-rank="60" data-filter="Tools, Utility, Gadgets" class="section-item">
+                60. <a href="https://tools.pirateruler.com/" target="_blank"> Tools – More Utilities & Gadgets</a> 
+            </div>
+
+            <div data-rank="61" data-filter="Tools, Math, Calculator" class="section-item">
+                61. <a href="https://calculator.pirateruler.com/" target="_blank"> Calculator – Online Math & Scientific</a> 
+            </div>
+
+            <div data-rank="62" data-filter="Tools, URL, Shortener" class="section-item">
+                62. <a href="https://shorturl.pirateruler.com/" target="_blank"> ShortURL – Link Shortener Service</a> 
+            </div>
+
+            <div data-rank="63" data-filter="Finance, Currency, Converter" class="section-item">
+                63. <a href="https://currency.pirateruler.com/" target="_blank"> Currency – Converter & Exchange Rates</a> 
+            </div>
+
+            <div data-rank="64" data-filter="Tools, IP, Network" class="section-item">
+                64. <a href="https://ip.pirateruler.com/" target="_blank"> IP – Address Details & Geo-Location</a> 
+            </div>
+
+            <div data-rank="65" data-filter="Language, Dictionary, Reference" class="section-item">
+                65. <a href="https://dictionary.pirateruler.com/" target="_blank"> Dictionary – Definitions & Thesaurus</a> 
+            </div>
+
+            <div data-rank="66" data-filter="Language, Translate, Tools" class="section-item">
+                66. <a href="https://translate.pirateruler.com/" target="_blank"> Translate – Language Translation</a> 
+            </div>
+
+            <div data-rank="67" data-filter="Language, Spanish, Learn" class="section-item">
+                67. <a href="https://spanish.pirateruler.com/" target="_blank"> Spanish – Learn the Spanish Language</a> 
+            </div>
+
+            <div data-rank="68" data-filter="Language, Sanskrit, Learn" class="section-item">
+                68. <a href="https://sanskrit.pirateruler.com/" target="_blank"> Sanskrit – Learn the Sanskrit Language</a> 
+            </div>
+
+            <div data-rank="69" data-filter="Info, Mythology, History" class="section-item">
+                69. <a href="https://norse.pirateruler.com/" target="_blank"> Norse – Mythology & History</a> 
+            </div>
+
+            <div data-rank="70" data-filter="Language, English, Learn" class="section-item">
+                70. <a href="https://learneng.pirateruler.com/" target="_blank"> LearnEng – English Learning Resources</a> 
+            </div>
+
+            <div data-rank="71" data-filter="Tools, QR, Generator" class="section-item">
+                71. <a href="https://qr.pirateruler.com/" target="_blank"> QR – Code Generator & Scanner</a> 
+            </div>
+
+            <div data-rank="72" data-filter="Dev, Design, Assets" class="section-item">
+                72. <a href="https://kit.pirateruler.com/" target="_blank"> Kit – Developer & Designer Assets</a> 
+            </div>
+
+            <div data-rank="73" data-filter="Info, Comics, Database" class="section-item">
+                73. <a href="https://heroes.pirateruler.com/" target="_blank"> Heroes – Superhero & Villain Database</a> 
+            </div>
+
+            <div data-rank="74" data-filter="Science, Space, Tracker" class="section-item">
+                74. <a href="https://orbit.pirateruler.com/" target="_blank"> Orbit – Satellite & Space Junk Tracker</a> 
+            </div>
+
+            <div data-rank="75" data-filter="Info, Calendar, Events" class="section-item">
+                75. <a href="https://holiday.pirateruler.com/" target="_blank"> Holiday – Calendar & Observances</a> 
+            </div>
+
+            <div data-rank="76" data-filter="Tools, Typing, Test" class="section-item">
+                76. <a href="https://typing.pirateruler.com/" target="_blank"> Typing – Speed Test & Practice</a> 
+            </div>
+
+            <div data-rank="77" data-filter="Info, Events, Celebrations" class="section-item">
+                77. <a href="https://festival.pirateruler.com/" target="_blank"> Festival – Global Celebrations & Events</a> 
+            </div>
+
+            <div data-rank="78" data-filter="Info, Aviation, Database" class="section-item">
+                78. <a href="https://aircraft.pirateruler.com/" target="_blank"> Aircraft – Aviation Database & Info</a> 
+            </div>
+
+            <div data-rank="79" data-filter="Info, Maps, Navigation" class="section-item">
+                79. <a href="https://map.pirateruler.com/" target="_blank"> Map – World Maps & Navigation</a> 
+            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 15px;">
+            <button onclick="document.getElementById('more-sites').style.display='block'; this.style.display='none';" style="
+                background: rgba(255,255,255,0.1); 
+                border: 1px solid rgba(255,255,255,0.2); 
+                color: #fff; 
+                padding: 10px 20px; 
+                border-radius: 5px; 
+                cursor: pointer; 
+                font-size: 14px;">
+                Load More (74)
+            </button>
+        </div>
+
+    </div>
+</div>
+
+            </div>
+        </div>
+        <br><br>
+    </div>
+    <div class="small-footer">
+        
+    </div>
+    <div id="expand-bg"></div>
+    <div id="pwaBanner"></div>
+    <div id="mainmenu">
+        <a href="index.html"><div class="item-menu" style="border-top:none">
+            <i class="mdil mdil-home"></i> Home
+        </div></a>
+        <a href="graveyard.html"><div class="item-menu">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="margin-bottom:-2px;width:1em;height:1em;"><path fill="currentColor" d="M10 2h4c3.31 0 5 2.69 5 6v10.66C16.88 17.63 15.07 17 12 17s-4.88.63-7 1.66V8c0-3.31 1.69-6 5-6M8 8v1.5h8V8zm1 4v1.5h6V12zM3 22v-.69c2.66-1.69 10.23-5.47 18-.06V22z"></path></svg> Graveyard
+        </div></a>
+        <a href="https://pirateruler.com/post/about.html">
+    <div class="item-menu">
+        <i class="mdil mdil-information"></i> About
+    </div>
+</a>
+<a href="https://pirateruler.com/post/privacy.html">
+    <div class="item-menu">
+        <i class="mdil mdil-lock"></i> Privacy Policy
+    </div>
+</a>
+
+<a href="https://pirateruler.com/post/terms.html">
+    <div class="item-menu">
+        <i class="mdil mdil-file"></i> Terms & Service
+    </div>
+</a>
+    </div>
 </body>
 </html>
